@@ -51,14 +51,14 @@ public class Bouncer {
         }
     }
     //will check for intersections with blocks rather than rectangles
-    public void checkIntersect(Rectangle shape, Group group){
+    public void checkIntersect(ImageView shape, Group group){
         if(myBouncer.intersects(shape.getLayoutBounds())){
             group.getChildren().remove(shape);
         }
         //code to change direction of ball
     }
 
-    public void checkIntersectPaddle(Rectangle shape){
+    public void checkIntersectPaddle(ImageView shape){
         if(myBouncer.intersects(shape.getLayoutBounds())){
             myVelocityY *= -1;
         }
