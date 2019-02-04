@@ -11,7 +11,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -63,9 +62,6 @@ public class Gameplay extends Application {
         ImageView myBouncer = new ImageView(image);
         bouncer = new Bouncer(myBouncer);
 
-        // x and y represent the top left corner, so center it
-        //myBouncer.setX(width / 2 - myBouncer.getBoundsInLocal().getWidth() / 2);
-        //myBouncer.setY(height / 2 - myBouncer.getBoundsInLocal().getHeight() / 2);
         myPaddle = new Rectangle(width / 2 - 25, height / 2 - 100, MOVER_SIZE, MOVER_SIZE);
         myPaddle.setFill(MOVER_COLOR);
         // order added to the group is the order in which they are drawn

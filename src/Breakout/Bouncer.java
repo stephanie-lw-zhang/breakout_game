@@ -13,14 +13,14 @@ public class Bouncer {
     private int myVelocityY = 1;
     private int numLives = 3;
     private ImageView myBouncer;
-    private double screenWidth;
-    private double screenHeight;
+    private double screenWidth = 400;
+    private double screenHeight = 400;
 
 
     public Bouncer(ImageView myBouncer){
         this.myBouncer = myBouncer;
-        this.myBouncer.setX(screenWidth / 2 - myBouncer.getBoundsInLocal().getWidth() / 2);
-        this.myBouncer.setY(screenHeight / 2 - myBouncer.getBoundsInLocal().getHeight() / 2);
+        myBouncer.setX(screenWidth / 2 - myBouncer.getBoundsInLocal().getWidth() / 2);
+        myBouncer.setY(screenHeight / 2 - myBouncer.getBoundsInLocal().getHeight() / 2);
     }
 
     public ImageView getView() {
