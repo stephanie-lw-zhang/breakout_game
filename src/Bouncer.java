@@ -11,19 +11,25 @@ public class Bouncer {
     private int myVelocityY = 1;
     private int numLives = 3;
     private ImageView myBouncer;
+    private double screenWidth;
+    private double screenHeight;
 
 
-    public Bouncer(ImageView myBouncer, double screenWidth, double screenHeight){
+    public Bouncer(ImageView myBouncer){
         this.myBouncer = myBouncer;
-        myBouncer.setX(screenWidth / 2 - myBouncer.getBoundsInLocal().getWidth() / 2);
-        myBouncer.setY(screenHeight / 2 - myBouncer.getBoundsInLocal().getHeight() / 2);
+        this.myBouncer.setX(screenWidth / 2 - myBouncer.getBoundsInLocal().getWidth() / 2);
+        this.myBouncer.setY(screenHeight / 2 - myBouncer.getBoundsInLocal().getHeight() / 2);
     }
 
-    public ImageView getView(){
+    public ImageView getView() {
         return myBouncer;
     }
 
-    public void move(double elapsedTime, double screenHeight, double screenWidth) {
+    public int getNumLives(){
+        return numLives;
+    }
+
+    public void move(double elapsedTime) {
         myBouncer.setX(myBouncer.getX() - myVelocityX * BOUNCER_SPEED * elapsedTime);
         myBouncer.setY(myBouncer.getY() - myVelocityY * 0.5 * BOUNCER_SPEED * elapsedTime);
         if(myBouncer.getX()<0){
@@ -45,11 +51,17 @@ public class Bouncer {
         }
     }
     //will check for intersections with blocks rather than rectangles
-    //similar method will be created for paddle
     public void checkIntersect(Rectangle shape, Group group){
         if(myBouncer.intersects(shape.getLayoutBounds())){
             group.getChildren().remove(shape);
         }
         //code to change direction of ball
     }
+
+    public void checkIntersectPaddle(Rectangle shape){
+        if(myBouncer.intersects(shape.getLayoutBounds())){
+            myVelocityY *= -1;
+        }
+    }
+
 }
