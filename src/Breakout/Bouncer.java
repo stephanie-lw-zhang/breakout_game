@@ -1,3 +1,5 @@
+package Breakout;
+
 import javafx.scene.Group;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
@@ -51,7 +53,7 @@ public class Bouncer {
         }
     }
     //will check for intersections with blocks rather than rectangles
-    public void checkIntersect(Rectangle shape, Group group){
+    public void checkIntersectBlock(Rectangle shape, Group group){
         if(myBouncer.intersects(shape.getLayoutBounds())){
             group.getChildren().remove(shape);
         }
