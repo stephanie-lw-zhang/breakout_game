@@ -1,3 +1,5 @@
+package Breakout;
+
 import javafx.scene.Group;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
@@ -11,8 +13,8 @@ public class Bouncer {
     private int myVelocityY = 1;
     private int numLives = 3;
     private ImageView myBouncer;
-    private double screenWidth;
-    private double screenHeight;
+    private double screenWidth = 400;
+    private double screenHeight = 400;
 
 
     public Bouncer(ImageView myBouncer){
@@ -21,7 +23,7 @@ public class Bouncer {
         this.myBouncer.setY(screenHeight / 2 - myBouncer.getBoundsInLocal().getHeight() / 2);
     }
 
-    public ImageView getView() {
+    public ImageView getBouncer() {
         return myBouncer;
     }
 
@@ -51,11 +53,15 @@ public class Bouncer {
         }
     }
     //will check for intersections with blocks rather than rectangles
-    public void checkIntersect(ImageView shape, Group group){
-        if(myBouncer.intersects(shape.getLayoutBounds())){
-            group.getChildren().remove(shape);
+    public void checkIntersectBlock(Block shape, Group group){
+        if(myBouncer.intersects(shape.getBlockBounds())){
+            shape.gotHit();
+            if(shape.getHitsLeft() == 0){
+                group.getChildren().remove(shape.getBlock());
+            }
+            myVelocityY *= -1;
         }
-        //code to change direction of ball
+
     }
 
     public void checkIntersectPaddle(ImageView shape){
