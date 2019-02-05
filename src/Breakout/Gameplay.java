@@ -217,9 +217,7 @@ public class Gameplay extends Application {
                 i--;
             }
         }
-        if(blockList.isEmpty()){
-            outcomeScreen(myStage, true);
-        }
+        if(blockList.isEmpty()) outcomeScreen(myStage, true);
         if(cornerTest){
             if(bouncer.getBouncer().getX()== bouncer.getBouncer().getY() && bouncer.getBouncer().getY()>30){
                 System.out.println("Corner Test Passes!");
@@ -261,7 +259,7 @@ public class Gameplay extends Application {
 
     private void outcomeScreen(Stage stage, boolean win){
         myAnimation.pause();
-        stage.setTitle("Loss Screen");
+        stage.setTitle("Outcome Screen");
         StackPane sp = new StackPane();
         Image img;
         if(win) img = new Image(WIN_IMAGE);
