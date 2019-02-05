@@ -65,7 +65,7 @@ public class Bouncer {
             myBouncer.setX(screenHeight / 2 - myBouncer.getBoundsInLocal().getWidth() / 2);
             myBouncer.setY(screenWidth / 2 - myBouncer.getBoundsInLocal().getHeight() / 2);
             numLives--;
-            new Gameplay().changeLives(this);
+            new Gameplay().changeLives(this.getNumLives());
         }
     }
 
@@ -75,7 +75,6 @@ public class Bouncer {
 
     private double getMaxX(){
         return myBouncer.getLayoutBounds().getMaxX();
-
     }
 
     private double getMinY(){
@@ -134,11 +133,7 @@ public class Bouncer {
     }
 
     public Boolean intersectsBlock(Block shape) {
-        if (myBouncer.intersects(shape.getBlockBounds())) {
-            return TRUE;
-        } else {
-            return FALSE;
-        }
+        return myBouncer.intersects(shape.getBlockBounds());
     }
 
 
