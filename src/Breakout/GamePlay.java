@@ -157,6 +157,19 @@ public class GamePlay extends Application {
         stage.show();
         //scene.setOnKeyPressed(e -> checkGameStart(e.getCode(), stage));
     }
+
+    private void testCorner(){
+
+    }
+
+    private void testBreakBlock(){
+
+    }
+
+    private void testLoseLife(){
+
+    }
+
     /**
      * Start the program.
      */

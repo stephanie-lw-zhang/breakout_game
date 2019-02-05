@@ -7,10 +7,10 @@ import javafx.scene.shape.Rectangle;
 
 public class Bouncer {
 
-    public static final int BOUNCER_SPEED = 150;
+    public static final int BOUNCER_SPEED = 100;
 
-    private int myVelocityX = 1;
-    private int myVelocityY = 1;
+    private double myVelocityX = 1;
+    private double myVelocityY = 1;
     private int numLives;
     private ImageView myBouncer;
     private double screenWidth = 400;
@@ -22,6 +22,7 @@ public class Bouncer {
         numLives = 3;
         myBouncer.setX(screenHeight / 2 - myBouncer.getBoundsInLocal().getWidth() / 2);
         myBouncer.setY(screenWidth / 2 - myBouncer.getBoundsInLocal().getHeight() / 2);
+        //this.setVelocities(Math.random()+0.5, Math.random()+0.5);
     }
 
     public ImageView getView() {
@@ -35,6 +36,11 @@ public class Bouncer {
     public void setPos(double x, double y){
         myBouncer.setX(x);
         myBouncer.setY(y);
+    }
+
+    public void setVelocities(double x, double y){
+        myVelocityX = x;
+        myVelocityY = y;
     }
 
     public void move(double elapsedTime) {

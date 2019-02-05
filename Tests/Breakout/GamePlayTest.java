@@ -6,6 +6,10 @@ import static org.junit.Assert.*;
 
 public class GamePlayTest {
 
+    public void readTestFile(){
+
+    }
+
     @Test
     public void cornerBounce(){
 
