@@ -46,11 +46,15 @@ public class Gameplay extends Application {
     private Bouncer bouncer;
     private Paddle paddle;
     private Block block;
+    private PowerUp sizePowerUp;
 
 
     private ImageView myPaddle;
     private ImageView myBouncer;
     private ArrayList<Block> blockList;
+    private ArrayList<PowerUp> powerUpList;
+
+
     private ImageView imagePowerUp;
 
 //    private ImageView myBlock;
@@ -145,6 +149,7 @@ public class Gameplay extends Application {
         root.getChildren().add(bouncer.getBouncer());
         root.getChildren().add(paddle.getPaddle());
 
+        powerUpList = new ArrayList<PowerUp>();
 
 
         // respond to input
@@ -153,15 +158,6 @@ public class Gameplay extends Application {
     }
 
 
-    private void stepPowerUp(Block block, double elapsedTime){
-        var imageSizePower = new Image(this.getClass().getClassLoader().getResourceAsStream(SIZEPWR_IMAGE));
-        ImageView imagePowerUp = new ImageView(imageSizePower);
-        root.getChildren().add(imagePowerUp);
-        imagePowerUp.setX((block.getBlockBounds().getMaxX() + block.getBlockBounds().getMinX())/2);
-        imagePowerUp.setY(block.getBlockBounds().getMaxY());
-        //THIS LINE BELOW DOESNT WORK--NEED TO MAKE POWERUP FALL DOWN
-        imagePowerUp.setY(imagePowerUp.getY() + 10 * elapsedTime);
-    }
 
     // Change properties of shapes to animate them
     // Note, there are more sophisticated ways to animate shapes, but these simple ways work fine to start.
@@ -171,10 +167,15 @@ public class Gameplay extends Application {
         for(Block each: blockList){
             bouncer.checkIntersectBlock(each, root);
             if(bouncer.intersectsBlock(each) && each.getPowerUp()){
-                stepPowerUp(each, elapsedTime);
+                PowerUp pwrUp = new PowerUp(each);
+                root.getChildren().add(pwrUp.getMyPowerUp());
+                powerUpList.add(pwrUp);
             }
         }
-
+        for(PowerUp each: powerUpList){
+            each.move(elapsedTime);
+            paddle.checkIntersectPowerUp(each.getMyPowerUp());
+        }
 
     }
 

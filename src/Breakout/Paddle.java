@@ -25,4 +25,10 @@ public class Paddle {
             myPaddle.setX(myPaddle.getX() - MOVER_SPEED);
         }
     }
+
+    public void checkIntersectPowerUp(ImageView shape){
+        if(myPaddle.intersects(shape.getLayoutBounds())){
+             myPaddle.setFitWidth(myPaddle.getFitWidth() * 1.5);
+        }
+    }
 }

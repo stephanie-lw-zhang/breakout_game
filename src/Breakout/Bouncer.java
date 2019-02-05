@@ -109,13 +109,13 @@ public class Bouncer {
         if(myBouncer.intersects(shape.getBlockBounds())){
             shape.gotHit();
             //Top bottom
-            if(topBottom(shape)){
+//            if(topBottom(shape)){
                 myVelocityY *= -1;
 
-            }
-            else if(leftRight(shape)){
-                myVelocityX *= -1;
-            }
+//            }
+//            else if(leftRight(shape)){
+//                myVelocityX *= -1;
+//            }
             if(shape.getHitsLeft() == 0){
                 group.getChildren().remove(shape.getBlock());
             }
