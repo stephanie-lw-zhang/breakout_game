@@ -59,7 +59,7 @@ public class Bouncer {
             myBouncer.setX(screenHeight / 2 - myBouncer.getBoundsInLocal().getWidth() / 2);
             myBouncer.setY(screenWidth / 2 - myBouncer.getBoundsInLocal().getHeight() / 2);
             numLives--;
-            new GamePlay().changeLives(this);
+            new Gameplay().changeLives(this);
         }
     }
     //will check for intersections with blocks rather than rectangles

@@ -16,7 +16,7 @@ import javafx.stage.Stage;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
-public class GamePlay extends Application {
+public class Gameplay extends Application {
     public static final String TITLE = "Example JavaFX";
     public static final String SPLASH_IMAGE = "breakout_background.png";
     public static final String LOSE_IMAGE = "breakout_lose.png";
