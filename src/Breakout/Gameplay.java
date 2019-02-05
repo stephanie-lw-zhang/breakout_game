@@ -18,6 +18,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+
 public class Gameplay extends Application {
     public static final String TITLE = "Example JavaFX";
     public static final int SIZE = 400;
@@ -28,6 +31,9 @@ public class Gameplay extends Application {
     public static final String BOUNCER_IMAGE = "ball.gif";
     public static final String PADDLE_IMAGE = "paddle.gif";
     public static final String BLOCK_IMAGE = "brick1.gif";
+    public static final String SIZEPWR_IMAGE = "sizepower.gif";
+
+
 
 
     public static final Paint MOVER_COLOR = Color.PLUM;
@@ -45,6 +51,8 @@ public class Gameplay extends Application {
     private ImageView myPaddle;
     private ImageView myBouncer;
     private ArrayList<Block> blockList;
+    private ImageView imagePowerUp;
+
 //    private ImageView myBlock;
 
 
@@ -88,11 +96,17 @@ public class Gameplay extends Application {
                 String[] splitLine = line.split(",");
                 for(int i = 0; i < Math.min(splitLine.length, screenWidth/imageBlock.getWidth()); i++){
                     double x = i * imageBlock.getWidth();
-                        if(Integer.valueOf(splitLine[i]) == 0){
+                    int value = Integer.valueOf(splitLine[i]);
+                        if(value == 0){
                             continue;
                         }
-                        ImageView myBlock = new ImageView( imageBlock);
-                        Block block = new Block(myBlock, Integer.valueOf(splitLine[i]), i * imageBlock.getWidth(),  y);
+                    ImageView myBlock = new ImageView( imageBlock);
+                    Block block;
+                    if (value == -1){
+                        block = new Block(myBlock, 1, TRUE,i * imageBlock.getWidth(),  y);
+                    } else {
+                        block = new Block(myBlock, value, FALSE, i * imageBlock.getWidth(), y);
+                    }
                         root.getChildren().add(block.getBlock());
                         blockList.add(block);
                 }
@@ -116,32 +130,20 @@ public class Gameplay extends Application {
         bouncer = new Bouncer(myBouncer);
 
         // x and y represent the top left corner, so center it
-        //myBouncer.setX(width / 2 - myBouncer.getBoundsInLocal().getWidth() / 2);
-        //myBouncer.setY(height / 2 - myBouncer.getBoundsInLocal().getHeight() / 2);
+
         var imagePaddle = new Image(this.getClass().getClassLoader().getResourceAsStream(PADDLE_IMAGE));
         myPaddle = new ImageView(imagePaddle);
         paddle = new Paddle(myPaddle);
         myPaddle.setX(width / 2 - myPaddle.getBoundsInLocal().getWidth() / 2);
         myPaddle.setY(height - myPaddle.getBoundsInLocal().getHeight());
 
-//        myBlock = new ImageView(imageBlock);
-//        myBlocka = new ImageView(imageBlock);
-//        blocka = new Block(myBlocka, 1, 0,  0);
-//        root.getChildren().add(blocka.getBlock());
 
         readBlockConfiguration("config1.txt", root, SIZE, SIZE);
-//        for(int i = 0; i < 2; i++){
-//            myBlock = new ImageView(imageBlock);
-//            block = new Block(myBlock, 1, 0,  i * 50);
-//            root.getChildren().add(block.getBlock());
-//        }
-
 
 
         // order added to the group is the order in which they are drawn
         root.getChildren().add(bouncer.getBouncer());
         root.getChildren().add(paddle.getPaddle());
-        //root.getChildren().add(block.getBlock());
 
 
 
@@ -151,6 +153,15 @@ public class Gameplay extends Application {
     }
 
 
+    private void stepPowerUp(Block block, double elapsedTime){
+        var imageSizePower = new Image(this.getClass().getClassLoader().getResourceAsStream(SIZEPWR_IMAGE));
+        ImageView imagePowerUp = new ImageView(imageSizePower);
+        root.getChildren().add(imagePowerUp);
+        imagePowerUp.setX((block.getBlockBounds().getMaxX() + block.getBlockBounds().getMinX())/2);
+        imagePowerUp.setY(block.getBlockBounds().getMaxY());
+        //THIS LINE BELOW DOESNT WORK--NEED TO MAKE POWERUP FALL DOWN
+        imagePowerUp.setY(imagePowerUp.getY() + 10 * elapsedTime);
+    }
 
     // Change properties of shapes to animate them
     // Note, there are more sophisticated ways to animate shapes, but these simple ways work fine to start.
@@ -159,7 +170,11 @@ public class Gameplay extends Application {
         bouncer.checkIntersectPaddle(paddle.getPaddle());
         for(Block each: blockList){
             bouncer.checkIntersectBlock(each, root);
+            if(bouncer.intersectsBlock(each) && each.getPowerUp()){
+                stepPowerUp(each, elapsedTime);
+            }
         }
+
 
     }
 

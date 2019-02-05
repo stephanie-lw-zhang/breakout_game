@@ -10,8 +10,6 @@ public class Paddle {
 
     public Paddle(ImageView myPaddle){
         this.myPaddle = myPaddle;
-//        this.myPaddle.setX(screenWidth / 2 - myBouncer.getBoundsInLocal().getWidth() / 2);
-//        this.myPaddle.setY(screenHeight / 2 - myBouncer.getBoundsInLocal().getHeight() / 2);
     }
 
     public ImageView getPaddle() {
