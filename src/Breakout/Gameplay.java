@@ -16,6 +16,15 @@ import javafx.stage.Stage;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Scanner;
+
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+
 public class Gameplay extends Application {
     public static final String TITLE = "Example JavaFX";
     public static final String SPLASH_IMAGE = "breakout_background.png";
@@ -28,19 +37,36 @@ public class Gameplay extends Application {
     public static final double SECOND_DELAY = 1.0 / FRAMES_PER_SECOND;
     public static final Paint BACKGROUND = Color.AZURE;
     public static final String BOUNCER_IMAGE = "ball.gif";
+    public static final String PADDLE_IMAGE = "paddle.gif";
+    public static final String BLOCK_IMAGE = "brick1.gif";
+    public static final String SIZEPWR_IMAGE = "sizepower.gif";
+
+
+
+
     public static final Paint MOVER_COLOR = Color.PLUM;
     public static final int MOVER_SIZE = 50;
-    public static final int MOVER_SPEED = 5;
+    public static final int MOVER_SPEED = 10;
 
     // some things we need to remember during our game
     //private Stage stage;
     private Scene myScene;
     private Group root;
     private Bouncer bouncer;
-    private Rectangle myPaddle;
-    private Text level;
-    private static Text lives;
-    private static Stage myStage;
+    private Paddle paddle;
+    private Block block;
+
+
+    private ImageView myPaddle;
+    private ImageView myBouncer;
+    private ArrayList<Block> blockList;
+    private ImageView imagePowerUp;
+
+//    private ImageView myBlock;
+
+
+//    private Boolean lost = Boolean.FALSE;
+//    private Boolean won = Boolean.FALSE;
 
 
     /**
@@ -84,6 +110,46 @@ public class Gameplay extends Application {
         animation.play();
     }
 
+    private void readBlockConfiguration (String file, Group root, int screenWidth, int screenHeight){
+        //file format is number, comma, number, etc
+        //each line represents a line of bricks
+        //each number is the number of times the brick can get hit until it breaks
+        try {
+            blockList = new ArrayList<Block>();
+            var imageBlock = new Image(this.getClass().getClassLoader().getResourceAsStream(BLOCK_IMAGE));
+
+            String rootPath = "resources/";
+            FileReader in = new FileReader(rootPath + file);
+            BufferedReader br = new BufferedReader(in);
+
+            int y = 0;
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] splitLine = line.split(",");
+                for(int i = 0; i < Math.min(splitLine.length, screenWidth/imageBlock.getWidth()); i++){
+                    double x = i * imageBlock.getWidth();
+                    int value = Integer.valueOf(splitLine[i]);
+                        if(value == 0){
+                            continue;
+                        }
+                    ImageView myBlock = new ImageView( imageBlock);
+                    Block block;
+                    if (value == -1){
+                        block = new Block(myBlock, 1, TRUE,i * imageBlock.getWidth(),  y);
+                    } else {
+                        block = new Block(myBlock, value, FALSE, i * imageBlock.getWidth(), y);
+                    }
+                        root.getChildren().add(block.getBlock());
+                        blockList.add(block);
+                }
+                y += imageBlock.getHeight();
+            }
+        } catch (Exception ex){
+            System.out.println("file not found");
+        }
+    }
+
+
     // Create the game's "scene": what shapes will be in the game and their starting properties
     private Scene setupGame (int width, int height, Paint background) {
         // create one top level collection to organize the things in the scene
@@ -91,35 +157,57 @@ public class Gameplay extends Application {
         // create a place to see the shapes
         var scene = new Scene(root, width, height, background);
         // make some shapes and set their properties
-        var image = new Image(this.getClass().getClassLoader().getResourceAsStream(BOUNCER_IMAGE));
-        ImageView myBouncer = new ImageView(image);
+        var imageBouncer = new Image(this.getClass().getClassLoader().getResourceAsStream(BOUNCER_IMAGE));
+        myBouncer = new ImageView(imageBouncer);
         bouncer = new Bouncer(myBouncer);
-        myPaddle = new Rectangle(width / 2, height / 2 + 175, MOVER_SIZE, MOVER_SIZE/8);
-        myPaddle.setFill(MOVER_COLOR);
-        level = new Text();
-        level.setText(LEVEL);
-        level.setX(50);
-        level.setY(HEIGHT-25);
 
-        lives = new Text();
-        lives.setText(Integer.toString(bouncer.getNumLives()));
-        lives.setX(50);
-        lives.setY(HEIGHT-15);
+        // x and y represent the top left corner, so center it
+
+        var imagePaddle = new Image(this.getClass().getClassLoader().getResourceAsStream(PADDLE_IMAGE));
+        myPaddle = new ImageView(imagePaddle);
+        paddle = new Paddle(myPaddle);
+        myPaddle.setX(width / 2 - myPaddle.getBoundsInLocal().getWidth() / 2);
+        myPaddle.setY(height - myPaddle.getBoundsInLocal().getHeight());
+
+
+        readBlockConfiguration("config1.txt", root, SIZE, SIZE);
+
+
         // order added to the group is the order in which they are drawn
-        root.getChildren().add(bouncer.getView());
-        root.getChildren().add(myPaddle);
-        root.getChildren().add(level);
-        root.getChildren().add(lives);
+        root.getChildren().add(bouncer.getBouncer());
+        root.getChildren().add(paddle.getPaddle());
+
+
+
         // respond to input
-        scene.setOnKeyPressed(e -> handleKeyInput(e.getCode()));
+        scene.setOnKeyPressed(e -> paddle.handleKeyInput(e.getCode()));
         return scene;
+    }
+
+
+    private void stepPowerUp(Block block, double elapsedTime){
+        var imageSizePower = new Image(this.getClass().getClassLoader().getResourceAsStream(SIZEPWR_IMAGE));
+        ImageView imagePowerUp = new ImageView(imageSizePower);
+        root.getChildren().add(imagePowerUp);
+        imagePowerUp.setX((block.getBlockBounds().getMaxX() + block.getBlockBounds().getMinX())/2);
+        imagePowerUp.setY(block.getBlockBounds().getMaxY());
+        //THIS LINE BELOW DOESNT WORK--NEED TO MAKE POWERUP FALL DOWN
+        imagePowerUp.setY(imagePowerUp.getY() + 10 * elapsedTime);
     }
 
     // Change properties of shapes to animate them
     // Note, there are more sophisticated ways to animate shapes, but these simple ways work fine to start.
     private void step (double elapsedTime) {
         bouncer.move(elapsedTime);
-        bouncer.checkIntersectPaddle(myPaddle);
+        bouncer.checkIntersectPaddle(paddle.getPaddle());
+        for(Block each: blockList){
+            bouncer.checkIntersectBlock(each, root);
+            if(bouncer.intersectsBlock(each) && each.getPowerUp()){
+                stepPowerUp(each, elapsedTime);
+            }
+        }
+
+
     }
 
     public void changeLives(Bouncer bouncer){
