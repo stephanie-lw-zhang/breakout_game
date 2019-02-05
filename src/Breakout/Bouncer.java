@@ -13,9 +13,9 @@ public class Bouncer {
 
     public static final int BOUNCER_SPEED = 100;
 
-    private int myVelocityX = 1;
-    private int myVelocityY = 1;
-    private int numLives = 3;
+    private double myVelocityX = 1;
+    private double myVelocityY = 1;
+    private int numLives;
     private ImageView myBouncer;
     private double screenWidth = 400;
     private double screenHeight = 400;
@@ -24,8 +24,10 @@ public class Bouncer {
 
     public Bouncer(ImageView myBouncer){
         this.myBouncer = myBouncer;
-        this.myBouncer.setX(screenWidth / 2 - myBouncer.getBoundsInLocal().getWidth() / 2);
-        this.myBouncer.setY(screenHeight / 2 - myBouncer.getBoundsInLocal().getHeight() / 2);
+        numLives = 3;
+        myBouncer.setX(screenHeight / 2 - myBouncer.getBoundsInLocal().getWidth() / 2);
+        myBouncer.setY(screenWidth / 2 - myBouncer.getBoundsInLocal().getHeight() / 2);
+        //this.setVelocities(Math.random()+0.5, Math.random()+0.5);
     }
 
     public ImageView getBouncer() {
@@ -34,6 +36,16 @@ public class Bouncer {
 
     public int getNumLives(){
         return numLives;
+    }
+
+    public void setPos(double x, double y){
+        myBouncer.setX(x);
+        myBouncer.setY(y);
+    }
+
+    public void setVelocities(double x, double y){
+        myVelocityX = x;
+        myVelocityY = y;
     }
 
     public void move(double elapsedTime) {
@@ -49,13 +61,11 @@ public class Bouncer {
         if(myBouncer.getX() > screenHeight-myBouncer.getImage().getHeight()){
             myVelocityX *=-1;
         }
-        if(myBouncer.getY() > screenWidth-myBouncer.getImage().getWidth()){
-            myBouncer.setX(screenWidth / 2 - myBouncer.getBoundsInLocal().getWidth() / 2);
-            myBouncer.setY(screenHeight / 2 - myBouncer.getBoundsInLocal().getHeight() / 2);
+        if(myBouncer.getY()>screenWidth-myBouncer.getImage().getWidth()){
+            myBouncer.setX(screenHeight / 2 - myBouncer.getBoundsInLocal().getWidth() / 2);
+            myBouncer.setY(screenWidth / 2 - myBouncer.getBoundsInLocal().getHeight() / 2);
             numLives--;
-        }
-        if(numLives == 0){
-            //game over
+            new Gameplay().changeLives(this);
         }
     }
 
@@ -136,6 +146,10 @@ public class Bouncer {
         if(myBouncer.intersects(shape.getLayoutBounds())){
             myVelocityY *= -1;
         }
+    }
+
+    public void increaseNumLives(){
+        numLives++;
     }
 
 }
