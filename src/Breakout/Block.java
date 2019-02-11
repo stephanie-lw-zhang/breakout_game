@@ -1,6 +1,7 @@
 package Breakout;
 
 import javafx.geometry.Bounds;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 
@@ -10,8 +11,8 @@ public class Block {
     private Boolean powerUp;
 
 
-    public Block(ImageView block, int totalHits, boolean pwrup, double x, double y) {
-        this.myBlock = block;
+    public Block(String image, int totalHits, boolean pwrup, double x, double y) {
+        myBlock = new ImageView(new Image(getClass().getClassLoader().getResourceAsStream(image)));
         this.hitsLeft = totalHits;
         this.powerUp = pwrup;
         this.myBlock.setX(x);
@@ -30,7 +31,6 @@ public class Block {
         return myBlock;
     }
 
-
     public void gotHit() {
         this.hitsLeft -= 1;
     }
@@ -38,8 +38,5 @@ public class Block {
     public Boolean getPowerUp() {
         return this.powerUp;
     }
-
-
-
 
 }

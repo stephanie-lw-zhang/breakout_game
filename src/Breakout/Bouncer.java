@@ -1,33 +1,28 @@
 package Breakout;
 
 import javafx.scene.Group;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.shape.Rectangle;
-
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
-
 
 public class Bouncer {
 
-    public static final int BOUNCER_SPEED = 100;
-
+    private int BOUNCER_SPEED = 100;
     private double myVelocityX = 1;
     private double myVelocityY = 1;
     private int numLives;
+    private int score = 0;
     private ImageView myBouncer;
     private double screenWidth = 400;
     private double screenHeight = 400;
     public static final String SIZEPWR_IMAGE = "sizepower.gif";
+    private Gameplay game;
 
 
-    public Bouncer(ImageView myBouncer){
+    public Bouncer(ImageView myBouncer, Gameplay game){
         this.myBouncer = myBouncer;
+        this.game =game;
         numLives = 3;
         myBouncer.setX(screenHeight / 2 - myBouncer.getBoundsInLocal().getWidth() / 2);
         myBouncer.setY(screenWidth / 2 - myBouncer.getBoundsInLocal().getHeight() / 2);
-        //this.setVelocities(Math.random()+0.5, Math.random()+0.5);
     }
 
     public ImageView getBouncer() {
@@ -38,9 +33,22 @@ public class Bouncer {
         return numLives;
     }
 
+    public int getScore(){
+        return score;
+    }
+
     public void setPos(double x, double y){
         myBouncer.setX(x);
         myBouncer.setY(y);
+    }
+
+    public void incrementSpeed(int speed){
+        this.BOUNCER_SPEED +=speed;
+    }
+
+    public void resetPos(){
+        myBouncer.setX(screenHeight / 2 - myBouncer.getBoundsInLocal().getWidth() / 2);
+        myBouncer.setY(screenWidth / 2 - myBouncer.getBoundsInLocal().getHeight() / 2);
     }
 
     public void setVelocities(double x, double y){
@@ -65,7 +73,7 @@ public class Bouncer {
             myBouncer.setX(screenHeight / 2 - myBouncer.getBoundsInLocal().getWidth() / 2);
             myBouncer.setY(screenWidth / 2 - myBouncer.getBoundsInLocal().getHeight() / 2);
             numLives--;
-            new Gameplay().changeLives(this.getNumLives());
+            game.changeLives(this.getNumLives());
         }
     }
 
@@ -88,29 +96,15 @@ public class Bouncer {
     private Boolean topBottom(Block block) {
         double topEdge = this.getMinY();
         double bottomEdge = this.getMaxY();
-        if (topEdge > block.getBlockBounds().getMinY() && bottomEdge <= block.getBlockBounds().getMinY()) {
-            return TRUE;
-        }
-        else if (bottomEdge < block.getBlockBounds().getMaxY() && topEdge >= block.getBlockBounds().getMaxY()) {
-            return TRUE;
-        } else {
-            return FALSE;
-        }
+        return (topEdge > block.getBlockBounds().getMinY() && bottomEdge <= block.getBlockBounds().getMinY() |
+                bottomEdge < block.getBlockBounds().getMaxY() && topEdge >= block.getBlockBounds().getMaxY());
     }
 
     private Boolean leftRight(Block block){
         double leftEdge = this.getMinX();
         double rightEdge = this.getMaxX();
-
-        if(leftEdge < block.getBlockBounds().getMinX() && rightEdge >= block.getBlockBounds().getMinX()){
-            return TRUE;
-        }
-        else if(rightEdge > block.getBlockBounds().getMaxX() && leftEdge <= block.getBlockBounds().getMaxX()){
-            return TRUE;
-        } else {
-            return FALSE;
-        }
-
+        return(leftEdge < block.getBlockBounds().getMinX() && rightEdge >= block.getBlockBounds().getMinX() |
+                rightEdge > block.getBlockBounds().getMaxX() && leftEdge <= block.getBlockBounds().getMaxX());
     }
 
     //will check for intersections with blocks rather than rectangles
@@ -120,13 +114,14 @@ public class Bouncer {
             //Top bottom
             if(topBottom(shape)){
                 myVelocityY *= -1;
-
             }
-            else if(leftRight(shape)){
+            if(leftRight(shape)){
                 myVelocityX *= -1;
             }
             if(shape.getHitsLeft() == 0){
                 group.getChildren().remove(shape.getBlock());
+                score += 100;
+                game.changeScore(score);
             }
 
         }
