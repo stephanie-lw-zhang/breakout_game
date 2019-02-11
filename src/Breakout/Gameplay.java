@@ -26,7 +26,6 @@ public class Gameplay extends Application {
     public static final String SPLASH_IMAGE = "breakout_background.png";
     public static final String WIN_IMAGE = "breakout_win.png";
     public static final String LOSE_IMAGE = "breakout_lose.png";
-    public static final String CORNER_FILE = "corner.txt";
     public static final String LEVEL = "Level 1";
     public static final int WIDTH = 400;
     public static final int HEIGHT = 400;
@@ -40,7 +39,6 @@ public class Gameplay extends Application {
     public static final String BLOCK_IMAGE_1 = "brick1.gif";
     public static final String BLOCK_IMAGE_2 = "brick2.gif";
     public static final String BLOCK_IMAGE_3 = "brick3.gif";
-
     public static final int MOVER_SPEED = 10;
     public static final String LEVEL_ONE = "config1.txt";
     public static final String LEVEL_TWO = "config2.txt";
@@ -48,6 +46,11 @@ public class Gameplay extends Application {
     private boolean firstLevel = FALSE;
     private boolean secondLevel = FALSE;
     private boolean cornerTest = FALSE;
+    private boolean breakTest = FALSE;
+    private boolean lifeTest = FALSE;
+    public static final String CORNER_FILE = "corner.txt";
+    public static final String BREAK_FILE = "break.txt";
+    public static final String LIFE_FILE = "life.txt";
 
     // some things we need to remember during our game
     private Scene myScene;
@@ -190,8 +193,6 @@ public class Gameplay extends Application {
         score.setX(50);
         score.setY(HEIGHT-5);
 
-        // order added to the group is the order in which they are drawn
-        readBlockConfiguration("config1.txt", root, width, height);
         root.getChildren().add(bouncer.getBouncer());
         root.getChildren().add(paddle.getPaddle());
         root.getChildren().add(level);
@@ -263,6 +264,12 @@ public class Gameplay extends Application {
                 myAnimation.pause();
             }
         }
+        if(lifeTest){
+            if(bouncer.getNumLives()==2){
+                System.out.println("Lives Test Passes!");
+                myAnimation.pause();
+            }
+        }
     }
 
     public void changeLives(int numLives){
@@ -290,16 +297,15 @@ public class Gameplay extends Application {
         }
         else if(code.equals(KeyCode.R)){
             bouncer.resetPos();
-            //bouncer.setPos(HEIGHT/2- bouncer.getBouncer().getBoundsInLocal().getWidth() / 2,WIDTH/2 -bouncer.getBouncer().getBoundsInLocal().getWidth() / 2);
-        }
+            }
         else if(code.equals(KeyCode.COMMA)){
-            testCorner();
+            cornerTest = Tester.configureTest(bouncer, CORNER_FILE);
         }
         else if(code.equals(KeyCode.PERIOD)){
-            testBreakBlock();
+             breakTest = Tester.configureTest(bouncer, BREAK_FILE);
         }
-        else if(code.equals(KeyCode.BACK_SLASH)){
-            testLoseLife();
+        else if(code.equals(KeyCode.SLASH)){
+            lifeTest = Tester.configureTest(bouncer, LIFE_FILE);
         }
     }
 
@@ -317,29 +323,6 @@ public class Gameplay extends Application {
         stage.setScene(scene);
         stage.show();
         scene.setOnKeyPressed(e -> checkGameStart(e.getCode(), stage));
-    }
-
-    private void testCorner() throws IOException {
-        myAnimation.pause();
-        String rootPath = "resources/";
-        FileReader in = new FileReader(rootPath + CORNER_FILE);
-        BufferedReader br = new BufferedReader(in);
-        String line;
-        String[] splitLine = null;
-        while ((line = br.readLine()) != null) {
-            splitLine = line.split(",");
-        }
-        bouncer.setPos(Double.parseDouble(splitLine[0]), Double.parseDouble(splitLine[1]));
-        bouncer.setVelocities(Double.parseDouble(splitLine[2]), Double.parseDouble(splitLine[3]));
-        cornerTest = TRUE;
-    }
-//
-    private void testBreakBlock(){
-
-    }
-
-    private void testLoseLife(){
-
     }
 
     /**
