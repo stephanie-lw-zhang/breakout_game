@@ -14,6 +14,6 @@ public class AdditionalBouncer extends PowerUp {
     @Override
     public void applyPowerUp(Paddle paddle, Bouncer bouncer, Group root, ArrayList bouncerList) {
         this.disappears(root);
-        bouncer.createBouncer(root, bouncerList);
+        bouncer.createBouncer(root, bouncerList, 1);
     }
 }

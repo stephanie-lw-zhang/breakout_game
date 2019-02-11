@@ -13,7 +13,8 @@ public class AdditionalPoints extends PowerUp {
 
     @Override
     public void applyPowerUp(Paddle paddle, Bouncer bouncer, Group root, ArrayList bouncerList) {
-
+        this.disappears(root);
+        bouncer.setScore( bouncer.getScore() + 50 );
     }
 
 
