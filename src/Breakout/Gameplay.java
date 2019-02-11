@@ -60,7 +60,7 @@ public class Gameplay extends Application {
     private ArrayList<Block> blockList;
     private ArrayList<PowerUp> powerUpList;
     private ArrayList<Bouncer> bouncerList;
-    private Block block;
+
     private static Text lives;
     private Text level;
     private static Text score;

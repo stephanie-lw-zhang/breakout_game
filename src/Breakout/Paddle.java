@@ -36,8 +36,7 @@ public class Paddle {
     }
 
     public void widenPaddle(){
-        myPaddle.setFitWidth(100);
-        //how to change to scale of existing imageView
+        myPaddle.setFitWidth(myPaddle.getBoundsInParent().getWidth() * 1.5);
     }
 
 //    public ImageView createPaddle(Group root, int width, int height){

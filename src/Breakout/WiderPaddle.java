@@ -11,7 +11,6 @@ public class WiderPaddle extends PowerUp{
         super(powerUpSizeImage);
     }
 
-
     @Override
     public void applyPowerUp(Paddle paddle, Bouncer bouncer, Group root, ArrayList bouncerList) {
         this.disappears(root);

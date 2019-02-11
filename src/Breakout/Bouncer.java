@@ -98,7 +98,7 @@ public class Bouncer {
     public Group checkIntersectBlock(Block block, ArrayList powerUpList, Group root, double elapsedTime){
         if(myBouncer.intersects(block.getBlockBounds())) {
             block.gotHit();
-            if(topBottom(block)){
+            if(this.topBottom(block)){
                 myVelocityY *= -1;
 
             } else {
