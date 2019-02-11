@@ -35,18 +35,28 @@ public class Paddle {
         return myPaddle.getLayoutBounds();
     }
 
-    public void widenPaddle(){
-        myPaddle.setFitWidth(myPaddle.getBoundsInParent().getWidth() * 1.5);
+    public void widenPaddle(int screenWidth){
+        double newPaddleWidth = myPaddle.getBoundsInParent().getWidth() * 1.5;
+        if (newPaddleWidth < screenWidth){
+            myPaddle.setFitWidth(newPaddleWidth);
+        }
     }
 
-//    public ImageView createPaddle(Group root, int width, int height){
-//        var imagePaddle = new Image(this.getClass().getClassLoader().getResourceAsStream(PADDLE_IMAGE));
-//        myPaddle = new ImageView(imagePaddle);
-//        myPaddle.setX(width / 2 - myPaddle.getBoundsInLocal().getWidth() / 2);
-//        myPaddle.setY(height - myPaddle.getBoundsInLocal().getHeight());
-//        root.getChildren().add(myPaddle);
-//        return myPaddle;
+    public void setInitialPosition(int width, int height) {
+        myPaddle.setX(width / 2 - myPaddle.getBoundsInLocal().getWidth() / 2);
+        myPaddle.setY(height - myPaddle.getBoundsInLocal().getHeight());
+    }
+
+
+//    public static void createPaddle(int width, int height, Group root){
+//        Image imagePaddle = new Image(PADDLE_IMAGE);
+//        ImageView otherPaddle = new ImageView(imagePaddle);
+//        Paddle paddle = new Paddle(otherPaddle);
+//        root.getChildren().add(otherPaddle);
+//        paddle.setInitialPosition(width, height);
 //    }
+
+
 
 
 }

@@ -3,7 +3,10 @@ package Breakout;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import java.util.ArrayList;
+
+import java.util.List;
+
+import static Breakout.PowerUp.createPowerUp;
 
 
 public class Bouncer {
@@ -12,11 +15,11 @@ public class Bouncer {
     private double myVelocityX = 1;
     private double myVelocityY = 1;
     private int numLives;
-    private int score = 0;
+//    private int score = 0;
     private ImageView myBouncer;
     private double screenWidth = 400;
     private double screenHeight = 400;
-    public static final String SIZEPWR_IMAGE = "sizepower.gif";
+    private static final String SIZEPWR_IMAGE = "sizepower.gif";
     private Gameplay game;
 
 
@@ -36,13 +39,6 @@ public class Bouncer {
         return numLives;
     }
 
-    public int getScore(){
-        return score;
-    }
-
-    public void setScore(int newScore){
-        this.score = newScore;
-    }
 
     public void setPos(double x, double y){
         myBouncer.setX(x);
@@ -63,7 +59,7 @@ public class Bouncer {
         myVelocityY = y;
     }
 
-    public void move(double elapsedTime) {
+    private void move(double elapsedTime) {
         myBouncer.setX(myBouncer.getX() - myVelocityX * BOUNCER_SPEED * elapsedTime);
         myBouncer.setY(myBouncer.getY() - myVelocityY * 0.5 * BOUNCER_SPEED * elapsedTime);
 
@@ -98,8 +94,12 @@ public class Bouncer {
                 (bouncerTopEdge <= blockBottomEdge && bouncerRightEdge <= blockRightEdge && bouncerLeftEdge >= blockLeftEdge));
     }
 
+    private void updateScore(Gameplay game, Block block){
+        game.changeScore(game.getScore() + block.getTotalHits()*100);
+    }
+
     //will check for intersections with blocks rather than rectangles
-    public Group checkIntersectBlock(Block block, ArrayList powerUpList, Group root, double elapsedTime){
+    private void checkIntersectBlock(Block block, List<PowerUp> powerUpList, Group root, Gameplay game){
         if(myBouncer.intersects(block.getBlockBounds())) {
             block.gotHit();
             if(this.topBottom(block)){
@@ -109,32 +109,47 @@ public class Bouncer {
                 myVelocityX *= -1;
             }
         }
-        if(block.getHitsLeft() == 0){
-            if(block.isPowerUp()){
-                PowerUp powerUp = block.getPowerUpType();
-                powerUpList.add(powerUp);
-                root.getChildren().add(powerUp.getMyPowerUp());
-                powerUp.setPosition(block);
-            }
+        if(block.wasDestroyed()){
+            updateScore(game, block);
             root.getChildren().remove(block.getBlock());
+            if(block.isPowerUp()){
+                createPowerUp(block, powerUpList, root);
+            }
         }
-        return root;
     }
 
-    public void checkIntersectPaddle(Paddle paddle){
+
+    private void checkIntersectPaddle(Paddle paddle){
         if(myBouncer.intersects(paddle.getPaddleBounds())){
             myVelocityY *= -1;
         }
     }
+
+    public void stepBouncer(List<Bouncer> bouncerList,  List<Block> blockList, List<PowerUp> powerUpList, Paddle paddle, Group root, double elapsedTime, Gameplay game) {
+        for(int i = 0; i < bouncerList.size(); i++){
+            Bouncer currentBouncer = bouncerList.get(i);
+            currentBouncer.move(elapsedTime);
+            currentBouncer.checkIntersectPaddle(paddle);
+
+            for(int j=0; j<blockList.size(); j++){
+                Block currentBlock = blockList.get(j);
+                currentBouncer.checkIntersectBlock(currentBlock, powerUpList, root, game);
+                if(currentBlock.getHitsLeft()==0){
+                    blockList.remove(j);
+                }
+            }
+        }
+    }
+
+
 
     public void increaseNumLives(){
         numLives++;
     }
 
 
-
-    public void createBouncer(Group root, ArrayList bouncerList, int lives){
-        var imageBouncer = new Image(this.getClass().getClassLoader().getResourceAsStream("ball.gif"));
+    public void createAdditionalBouncer(Group root, List<Bouncer> bouncerList){
+        var imageBouncer = new Image("ball.gif");
         ImageView otherBouncer = new ImageView(imageBouncer);
         Bouncer bouncer = new Bouncer(otherBouncer, game);
         bouncer.numLives = 1;
