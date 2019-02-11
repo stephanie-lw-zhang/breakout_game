@@ -1,7 +1,10 @@
 package Breakout;
 
 import javafx.scene.Group;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import java.util.ArrayList;
+
 
 public class Bouncer {
 
@@ -19,13 +22,13 @@ public class Bouncer {
 
     public Bouncer(ImageView myBouncer, Gameplay game){
         this.myBouncer = myBouncer;
-        this.game =game;
+        this.game = game;
         numLives = 3;
         myBouncer.setX(screenHeight / 2 - myBouncer.getBoundsInLocal().getWidth() / 2);
         myBouncer.setY(screenWidth / 2 - myBouncer.getBoundsInLocal().getHeight() / 2);
     }
 
-    public ImageView getBouncer() {
+    public ImageView getBouncer(){
         return myBouncer;
     }
 
@@ -77,63 +80,45 @@ public class Bouncer {
         }
     }
 
-    private double getMaxY(){
-        return myBouncer.getLayoutBounds().getMaxY();
-    }
-
-    private double getMaxX(){
-        return myBouncer.getLayoutBounds().getMaxX();
-    }
-
-    private double getMinY(){
-        return myBouncer.getLayoutBounds().getMinY();
-    }
-
-    private double getMinX(){
-        return myBouncer.getLayoutBounds().getMinX();
-    }
 
     private Boolean topBottom(Block block) {
-        double topEdge = this.getMinY();
-        double bottomEdge = this.getMaxY();
-        return (topEdge > block.getBlockBounds().getMinY() && bottomEdge <= block.getBlockBounds().getMinY() |
-                bottomEdge < block.getBlockBounds().getMaxY() && topEdge >= block.getBlockBounds().getMaxY());
-    }
-
-    private Boolean leftRight(Block block){
-        double leftEdge = this.getMinX();
-        double rightEdge = this.getMaxX();
-        return(leftEdge < block.getBlockBounds().getMinX() && rightEdge >= block.getBlockBounds().getMinX() |
-                rightEdge > block.getBlockBounds().getMaxX() && leftEdge <= block.getBlockBounds().getMaxX());
+        double blockBottomEdge = block.getBlockBounds().getMaxY();
+        double blockTopEdge = block.getBlockBounds().getMinY();
+        double blockRightEdge = block.getBlockBounds().getMaxX();
+        double blockLeftEdge = block.getBlockBounds().getMinX();
+        double bouncerBottomEdge = myBouncer.getBoundsInLocal().getMaxY();
+        double bouncerTopEdge = myBouncer.getBoundsInLocal().getMinY();
+        double bouncerRightEdge = myBouncer.getBoundsInLocal().getMaxX();
+        double bouncerLeftEdge = myBouncer.getBoundsInLocal().getMinX();
+        return((bouncerBottomEdge >= blockTopEdge && bouncerRightEdge <= blockRightEdge && bouncerLeftEdge >= blockLeftEdge) ||
+                (bouncerTopEdge <= blockBottomEdge && bouncerRightEdge <= blockRightEdge && bouncerLeftEdge >= blockLeftEdge));
     }
 
     //will check for intersections with blocks rather than rectangles
-    public void checkIntersectBlock(Block shape, Group group){
-        if(myBouncer.intersects(shape.getBlockBounds())){
-            shape.gotHit();
-            //Top bottom
-            if(topBottom(shape)){
+    public Group checkIntersectBlock(Block block, ArrayList powerUpList, Group root, double elapsedTime){
+        if(myBouncer.intersects(block.getBlockBounds())) {
+            block.gotHit();
+            if(topBottom(block)){
                 myVelocityY *= -1;
-            }
-            if(leftRight(shape)){
+
+            } else {
                 myVelocityX *= -1;
             }
-            if(shape.getHitsLeft() == 0){
-                group.getChildren().remove(shape.getBlock());
-                score += 100;
-                game.changeScore(score);
-            }
-
         }
+        if(block.getHitsLeft() == 0){
+            if(block.isPowerUp()){
+                PowerUp powerUp = block.getPowerUpType();
+                powerUpList.add(powerUp);
+                root.getChildren().add(powerUp.getMyPowerUp());
+                powerUp.setPosition(block);
+            }
+            root.getChildren().remove(block.getBlock());
+        }
+        return root;
     }
 
-    public Boolean intersectsBlock(Block shape) {
-        return myBouncer.intersects(shape.getBlockBounds());
-    }
-
-
-    public void checkIntersectPaddle(ImageView shape){
-        if(myBouncer.intersects(shape.getLayoutBounds())){
+    public void checkIntersectPaddle(Paddle paddle){
+        if(myBouncer.intersects(paddle.getPaddleBounds())){
             myVelocityY *= -1;
         }
     }
@@ -142,4 +127,11 @@ public class Bouncer {
         numLives++;
     }
 
+    public void createBouncer(Group root, ArrayList bouncerList){
+        var imageBouncer = new Image(this.getClass().getClassLoader().getResourceAsStream("ball.gif"));
+        ImageView otherBouncer = new ImageView(imageBouncer);
+        Bouncer bouncer = new Bouncer(otherBouncer, game);
+        root.getChildren().add(otherBouncer);
+        bouncerList.add(bouncer);
+    }
 }

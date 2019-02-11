@@ -1,20 +1,18 @@
 package Breakout;
 
 import javafx.geometry.Bounds;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-
 
 public class Block {
     private ImageView myBlock;
     private int hitsLeft;
-    private Boolean powerUp;
+    private int powerUpType;
 
 
-    public Block(String image, int totalHits, boolean pwrup, double x, double y) {
-        myBlock = new ImageView(new Image(getClass().getClassLoader().getResourceAsStream(image)));
+    public Block(ImageView block, int totalHits, int pwrup, double x, double y) {
+        this.myBlock = block;
         this.hitsLeft = totalHits;
-        this.powerUp = pwrup;
+        this.powerUpType = pwrup;
         this.myBlock.setX(x);
         this.myBlock.setY(y);
     }
@@ -31,12 +29,28 @@ public class Block {
         return myBlock;
     }
 
+
     public void gotHit() {
         this.hitsLeft -= 1;
     }
 
-    public Boolean getPowerUp() {
-        return this.powerUp;
+    public Boolean isPowerUp() {
+        return this.powerUpType != 0;
     }
 
+    public PowerUp getPowerUpType(){
+        if(this.powerUpType == 1){
+            return new WiderPaddle();
+        } else if (this.powerUpType == 2){
+            return new AdditionalBouncer();
+        } else {
+            return new AdditionalPoints();
+        }
+
+    }
+
+    public Boolean wasDestroyed() {
+        return (hitsLeft == 0);
+    }
 }
+
