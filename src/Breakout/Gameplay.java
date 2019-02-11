@@ -263,7 +263,6 @@ public class Gameplay extends Application {
     }
 
     private void outcomeScreen(Stage stage, boolean win){
-        myAnimation.pause();
         stage.setTitle("Outcome Screen");
         StackPane sp = new StackPane();
         Image img;
