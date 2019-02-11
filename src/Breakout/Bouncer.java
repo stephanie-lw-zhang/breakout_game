@@ -92,7 +92,7 @@ public class Bouncer {
     public void checkIntersectBlock(Block block, ArrayList powerUpList, Group root, double elapsedTime){
         if(myBouncer.intersects(block.getBlockBounds())) {
             block.gotHit();
-            if(topBottom(block)){
+            if(this.topBottom(block)){
                 myVelocityY *= -1;
             } else {
                 myVelocityX *= -1;
@@ -122,11 +122,11 @@ public class Bouncer {
         numLives++;
     }
 
-    public void createBouncer(Group root, ArrayList bouncerList){
+    public void createBouncer(Group root, ArrayList<Bouncer> bouncerList){
         var imageBouncer = new Image(this.getClass().getClassLoader().getResourceAsStream(BOUNCER_IMAGE));
-        myBouncer = new ImageView(imageBouncer);
-        Bouncer bouncer = new Bouncer(myBouncer);
-        root.getChildren().add(myBouncer);
+        ImageView otherBouncer = new ImageView(imageBouncer);
+        Bouncer bouncer = new Bouncer(otherBouncer);
+        root.getChildren().add(otherBouncer);
         bouncerList.add(bouncer);
     }
 

@@ -39,7 +39,10 @@ public class Gameplay extends Application {
     public static final Paint BACKGROUND = Color.AZURE;
     public static final String BOUNCER_IMAGE = "ball.gif";
     public static final String PADDLE_IMAGE = "paddle.gif";
-    public static final String BLOCK_IMAGE = "brick1.gif";
+    public static final String BLOCK_IMAGE_1 = "brick1.gif";
+    public static final String BLOCK_IMAGE_2 = "brick2.gif";
+    public static final String BLOCK_IMAGE_3 = "brick3.gif";
+
     public static final int MOVER_SPEED = 10;
     private boolean cornerTest = FALSE;
 
@@ -55,7 +58,6 @@ public class Gameplay extends Application {
     private ArrayList<PowerUp> powerUpList;
     private ArrayList<Bouncer> bouncerList;
 
-    private Block block;
     private static Text lives;
     private Text level;
     private static Stage myStage;
@@ -111,7 +113,7 @@ public class Gameplay extends Application {
         try {
             blockList = new ArrayList<>();
 
-            var imageBlock = new Image(this.getClass().getClassLoader().getResourceAsStream(BLOCK_IMAGE));
+            Image imageBlock = new Image(this.getClass().getClassLoader().getResourceAsStream(BLOCK_IMAGE_1));
 
             String rootPath = "resources/";
             FileReader in = new FileReader(rootPath + file);
@@ -127,6 +129,13 @@ public class Gameplay extends Application {
                     int powerUpType = Integer.valueOf(splitLine[i].split( "\\." )[1]);
                     if(blockHits == 0){
                         continue;
+                    }
+                    else if(blockHits == 1){
+                        imageBlock = new Image(this.getClass().getClassLoader().getResourceAsStream(BLOCK_IMAGE_1));
+                    } else if (blockHits == 2){
+                        imageBlock = new Image(this.getClass().getClassLoader().getResourceAsStream(BLOCK_IMAGE_2));
+                    } else {
+                        imageBlock = new Image(this.getClass().getClassLoader().getResourceAsStream(BLOCK_IMAGE_3));
                     }
                     ImageView myBlock = new ImageView(imageBlock);
                     Block block;
