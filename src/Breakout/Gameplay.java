@@ -216,9 +216,6 @@ public class Gameplay extends Application {
             for(int j=0; j<blockList.size(); j++){
                 Block currentBlock = blockList.get(j);
                 currentBouncer.checkIntersectBlock(currentBlock, powerUpList, root, elapsedTime);
-                if(currentBlock.getHitsLeft()==0){
-                    blockList.remove(j);
-                }
             }
         }
 

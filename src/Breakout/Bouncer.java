@@ -89,16 +89,16 @@ public class Bouncer {
 
 
     //will check for intersections with blocks rather than rectangles
-    public void checkIntersectBlock(Block block, ArrayList powerUpList, Group root, double elapsedTime){
+    public Group checkIntersectBlock(Block block, ArrayList powerUpList, Group root, double elapsedTime){
         if(myBouncer.intersects(block.getBlockBounds())) {
             block.gotHit();
             if(this.topBottom(block)){
                 myVelocityY *= -1;
+
             } else {
                 myVelocityX *= -1;
             }
         }
-
         if(block.getHitsLeft() == 0){
             if(block.isPowerUp()){
                 PowerUp powerUp = block.getPowerUpType();
@@ -108,8 +108,10 @@ public class Bouncer {
             }
             root.getChildren().remove(block.getBlock());
         }
-
+        return root;
     }
+
+
 
 
     public void checkIntersectPaddle(Paddle paddle){
