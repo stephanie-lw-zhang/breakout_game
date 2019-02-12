@@ -15,11 +15,9 @@ public class Bouncer {
     private double myVelocityX = 1;
     private double myVelocityY = 1;
     private int numLives;
-//    private int score = 0;
     private ImageView myBouncer;
     private double screenWidth = 400;
     private double screenHeight = 400;
-    private static final String SIZEPWR_IMAGE = "sizepower.gif";
     private Gameplay game;
 
 
@@ -42,7 +40,6 @@ public class Bouncer {
     public void setNumLives(int lives){
         this.numLives = lives;
     }
-
 
     public void setPos(double x, double y){
         myBouncer.setX(x);
@@ -132,7 +129,6 @@ public class Bouncer {
         }
     }
 
-
     private void checkIntersectPaddle(Paddle paddle){
         if(myBouncer.intersects(paddle.getPaddleBounds())){
             myVelocityY *= -1;
@@ -151,8 +147,6 @@ public class Bouncer {
         }
     }
 
-
-
     public void increaseNumLives(){
         numLives++;
     }
@@ -165,4 +159,5 @@ public class Bouncer {
         root.getChildren().add(otherBouncer);
         bouncerList.add(bouncer);
     }
+
 }

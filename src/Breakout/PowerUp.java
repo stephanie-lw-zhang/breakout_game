@@ -31,11 +31,8 @@ abstract public class PowerUp {
     }
 
     public Boolean intersectsPaddle(Paddle paddle) {
-        if (myPowerUp.intersects(paddle.getPaddleBounds())) {
-            return Boolean.TRUE;
-        } else{
-            return Boolean.FALSE;
-        }
+        return myPowerUp.intersects(paddle.getPaddleBounds());
+
     }
 
     public void disappears(Group root){
@@ -60,6 +57,20 @@ abstract public class PowerUp {
         powerUpList.add(powerUp);
         root.getChildren().add(powerUp.getMyPowerUp());
         powerUp.setPosition(block);
+    }
+
+    public static PowerUp createPowerUpForTest(double x, double y, int powerUpType, List<PowerUp> powerUpList, Group root){
+        PowerUp powerUp = new WiderPaddlePowerUp();
+        if (powerUpType == 2){
+            powerUp = new AddBouncerPowerUp();
+        } if (powerUpType == 3){
+            powerUp = new AddPointsPowerUp();
+        }
+        powerUp.getMyPowerUp().setX(x);
+        powerUp.getMyPowerUp().setY(y);
+        powerUpList.add(powerUp);
+        root.getChildren().add( powerUp.getMyPowerUp() );
+        return powerUp;
     }
 
 

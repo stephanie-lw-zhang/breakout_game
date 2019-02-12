@@ -5,7 +5,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 
 public class Paddle {
-    private static final String PADDLE_IMAGE = "paddle.gif";
+
     private ImageView myPaddle;
     private double paddleWidth;
 
@@ -21,12 +21,11 @@ public class Paddle {
         return myPaddle;
     }
 
-
-    public void handleKeyInput (KeyCode code) {
-        if (code == KeyCode.RIGHT) {
+    public void handleKeyInput (KeyCode code, int height) {
+        if (code == KeyCode.RIGHT & this.getPaddle().getX()< height - this.getPaddle().getBoundsInParent().getWidth()) {
             myPaddle.setX(myPaddle.getX() + MOVER_SPEED);
         }
-        else if (code == KeyCode.LEFT) {
+        else if (code == KeyCode.LEFT & this.getPaddle().getX()>0) {
             myPaddle.setX(myPaddle.getX() - MOVER_SPEED);
         }
     }
@@ -47,16 +46,8 @@ public class Paddle {
         myPaddle.setY(height - myPaddle.getBoundsInLocal().getHeight());
     }
 
-
-//    public static void createPaddle(int width, int height, Group root){
-//        Image imagePaddle = new Image(PADDLE_IMAGE);
-//        ImageView otherPaddle = new ImageView(imagePaddle);
-//        Paddle paddle = new Paddle(otherPaddle);
-//        root.getChildren().add(otherPaddle);
-//        paddle.setInitialPosition(width, height);
-//    }
-
-
-
+    public void setPos(double x){
+        myPaddle.setX(x);
+    }
 
 }

@@ -54,6 +54,10 @@ public class Block {
         return (this.powerUpType != 0);
     }
 
+    public void setPowerUpType(int num){
+        this.powerUpType = num;
+    }
+
     public PowerUp getPowerUpType(){
         if(this.powerUpType == 1){
             return new WiderPaddlePowerUp();
@@ -129,6 +133,14 @@ public class Block {
         Block newBlock = new Block(otherBlock, this.getHitsLeft(), this.powerUpType, this.getBlockBounds().getMinX(),  this.getBlockBounds().getMinY());
         root.getChildren().remove(this.getBlock());
         blockList.remove(blockList.indexOf(this));
+        root.getChildren().add(newBlock.getBlock());
+        blockList.add(newBlock);
+    }
+
+    public static void setPosAndPowerUp(double x, double y, int powerUpType, Group root, List<Block> blockList){
+        Image imageBlock = new Image(BLOCK_IMAGE_1);
+        ImageView imageViewBlock = new ImageView(imageBlock);
+        Block newBlock = new Block(imageViewBlock, 1, powerUpType, x, y);
         root.getChildren().add(newBlock.getBlock());
         blockList.add(newBlock);
     }
