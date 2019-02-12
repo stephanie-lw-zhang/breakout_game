@@ -54,13 +54,12 @@ Key/Mouse inputs:
 
 * LEFT/RIGHT: move the paddle on the bottom of the screen to left/right.
 * ",": checks that the ball bounces off of the corner correctly on Level 1; checks if the additional bouncer power up works and actually adds bouncer on Level 2; checks that the ball bounces off of the paddle on Level 3.
-* ".": checks that a block breaks after being struck by a block on Level 1; checks if the points power up works actually increases the points on Level 2; checks if the ball bounces off of the right wall of screen on Level 3.
-* "/": checks that the number of lives decreases by one if the ball is transported below the bottom of the screen on Level 1; checks if the wider paddle power up works actually makes the paddle wider on Level 2; checks if the ball correctly bounces off of the side of a block on Level 3.
+* ".": checks that a block breaks after being struck by a block on Level 1; checks if the points power up works and actually increases the points on Level 2; checks if the ball bounces off of the right wall of screen on Level 3.
+* "/": checks that the number of lives decreases by one if the ball is transported below the bottom of the screen on Level 1; checks if the wider paddle power up works and actually makes the paddle wider on Level 2; checks if the ball correctly bounces off of the side of a block on Level 3.
 
 Cheat keys:
 
-* "R": reset all balls to t
-*  he center of the screen.
+* "R": reset all balls to the center of the screen.
 * "L": add an extra life.
 * "SPACE": remove a block from the screen.
 
