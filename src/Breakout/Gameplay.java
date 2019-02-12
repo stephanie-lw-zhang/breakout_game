@@ -65,7 +65,7 @@ public class Gameplay extends Application {
     private List<PowerUp> powerUpList;
     private List<Bouncer> bouncerList;
 
-    private static Text lives;
+    private static Text livesText;
     private Text level;
     private static Text scoreText;
     private static Stage myStage;
@@ -130,7 +130,7 @@ public class Gameplay extends Application {
         // x and y represent the top left corner, so center it
         Image imageBouncer = new Image(this.getClass().getClassLoader().getResourceAsStream(BOUNCER_IMAGE));
         myBouncer = new ImageView(imageBouncer);
-        bouncer = new Bouncer(myBouncer, this);
+        bouncer = new Bouncer(myBouncer, this, 3);
         bouncerList = new ArrayList<>();
         bouncerList.add(bouncer);
 
@@ -149,7 +149,7 @@ public class Gameplay extends Application {
         root.getChildren().add(bouncer.getBouncer());
         root.getChildren().add(paddle.getPaddle());
         root.getChildren().add(level);
-        root.getChildren().add(lives);
+        root.getChildren().add( livesText );
         root.getChildren().add( scoreText );
 
         powerUpList = new ArrayList<>();
@@ -174,10 +174,10 @@ public class Gameplay extends Application {
     }
 
     private void initializeLives(int height) {
-        lives = new Text();
-        lives.setText(Integer.toString(bouncer.getNumLives()));
-        lives.setX(TEXT_XPOS);
-        lives.setY(TEXT_SCORE_YPOS - 10);
+        livesText = new Text();
+        livesText.setText(Integer.toString(bouncer.getNumLives()));
+        livesText.setX(TEXT_XPOS);
+        livesText.setY(TEXT_SCORE_YPOS - 10);
     }
 
     private void initializeLevel(int height) {
@@ -229,8 +229,8 @@ public class Gameplay extends Application {
 
 
     public void changeLives(int numLives){
-        lives.setText(Integer.toString(numLives));
-        if(lives.getText().equals("0")) {
+        livesText.setText(Integer.toString(numLives));
+        if(livesText.getText().equals("0")) {
             outcomeScreen(myStage, false);
         }
     }

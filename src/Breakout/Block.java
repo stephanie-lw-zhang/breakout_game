@@ -46,7 +46,7 @@ public class Block {
     }
 
 
-    public void gotHit() {
+    public void takeHit () {
         this.hitsLeft -= 1;
     }
 
@@ -119,5 +119,20 @@ public class Block {
             System.out.println("file not found");
         }
     }
+
+    public void replaceBlock(Group root, List<Block> blockList){
+        Image imageBlock = new Image(this.getClass().getClassLoader().getResourceAsStream(BLOCK_IMAGE_1));
+        if(this.getHitsLeft() == 2) {
+            imageBlock = new Image(this.getClass().getClassLoader().getResourceAsStream( BLOCK_IMAGE_2 ) );
+        }
+        ImageView otherBlock = new ImageView(imageBlock);
+        Block newBlock = new Block(otherBlock, this.getHitsLeft(), this.powerUpType, this.getBlockBounds().getMinX(),  this.getBlockBounds().getMinY());
+        root.getChildren().remove(this.getBlock());
+        blockList.remove(blockList.indexOf(this));
+        root.getChildren().add(newBlock.getBlock());
+        blockList.add(newBlock);
+    }
+
+
 }
 
