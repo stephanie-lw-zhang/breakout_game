@@ -14,18 +14,20 @@ import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import java.util.ArrayList;
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static Breakout.Block.readBlockConfiguration;
+import static Breakout.PowerUp.stepPowerUp;
 
 public class Gameplay extends Application {
     public static final String TITLE = "Breakout JavaFX";
     public static final String SPLASH_IMAGE = "breakout_background.png";
     public static final String WIN_IMAGE = "breakout_win.png";
     public static final String LOSE_IMAGE = "breakout_lose.png";
-    public static final int WIDTH = 408;
-    public static final int HEIGHT = 612;
+    public static final int WIDTH = 400;
+    public static final int HEIGHT = 400;
     public static final int SIZE = 400;
     public static final int FRAMES_PER_SECOND = 60;
     public static final int MILLISECOND_DELAY = 1000 / FRAMES_PER_SECOND;
@@ -33,38 +35,53 @@ public class Gameplay extends Application {
     public static final Paint BACKGROUND = Color.AZURE;
     public static final String BOUNCER_IMAGE = "ball.gif";
     public static final String PADDLE_IMAGE = "paddle.gif";
-    public static final String BLOCK_IMAGE_1 = "brick1.gif";
-    public static final String BLOCK_IMAGE_2 = "brick2.gif";
-    public static final String BLOCK_IMAGE_3 = "brick3.gif";
-    public static final int MOVER_SPEED = 10;
+    //public static final String BLOCK_IMAGE = "brick1.gif";
+    //public static final int MOVER_SPEED = 10;
     public static final String LEVEL_ONE = "config1.txt";
     public static final String LEVEL_TWO = "config2.txt";
     public static final String LEVEL_THREE = "config3.txt";
     public int scoreVal;
     public int levelVal;
     public int highScoreVal;
-
     private boolean cornerTest = false;
     private boolean breakTest = false;
     private boolean lifeTest = false;
+    public static final String CORNER_FILE = "corner.txt";
+    public static final String BREAK_FILE = "break.txt";
+    public static final String LIFE_FILE = "life.txt";
+    private static final int TEXT_XPOS = 35;
+    private static final int TEXT_SCORE_YPOS = HEIGHT - 15;
 
-
-    // some things we need to remember during our game
     private Scene myScene;
     private Group root;
     private Bouncer bouncer;
     private Paddle paddle;
     private ImageView myPaddle;
     private ImageView myBouncer;
-    private ArrayList<Block> blockList;
-    private ArrayList<PowerUp> powerUpList;
-    private ArrayList<Bouncer> bouncerList;
+
+    private List<Block> blockList;
+    private List<PowerUp> powerUpList;
+    private List<Bouncer> bouncerList;
     private Text lives;
     private Text level;
     private Text score;
     private Text highScore;
     private Stage myStage;
     private Timeline myAnimation;
+
+    /**
+    private List<Block> blockList;
+    private List<PowerUp> powerUpList;
+    private List<Bouncer> bouncerList;
+
+    private static Text lives;
+    private Text level;
+    private static Text scoreText;
+    private static Stage myStage;
+    private Timeline myAnimation;
+    private int score = 0;
+*/
+
 
 
     /**
@@ -79,14 +96,18 @@ public class Gameplay extends Application {
 
         StackPane sp = new StackPane();
         Image img = new Image(SPLASH_IMAGE);
-        ImageView imgView = new ImageView(img);
-        sp.getChildren().add(imgView);
+        createStage( stage, sp, img );
+    }
+
+    private void createStage(Stage stage, StackPane sp, Image img) {
+        ImageView imgView = new ImageView( img );
+        sp.getChildren().add( imgView );
 
         //Adding HBox to the scene
-        Scene scene = new Scene(sp);
-        stage.setScene(scene);
+        Scene scene = new Scene( sp );
+        stage.setScene( scene );
         stage.show();
-        scene.setOnKeyPressed(e -> checkGameStart(e.getCode(), stage));
+        scene.setOnKeyPressed( e -> checkGameStart( e.getCode(), stage ) );
     }
 
     private void checkGameStart(KeyCode code, Stage stage){
@@ -100,6 +121,7 @@ public class Gameplay extends Application {
         // attach scene to the stage and display it
         scoreVal = 0;
         myScene = setupGame(HEIGHT, WIDTH, BACKGROUND);
+
         stage.setScene(myScene);
         stage.setTitle(TITLE);
         stage.show();
@@ -111,50 +133,6 @@ public class Gameplay extends Application {
         myAnimation.play();
     }
 
-    private void readBlockConfiguration (String file, Group root, int screenWidth, int screenHeight){
-        //file format is number, comma, number, etc
-        //each line represents a line of bricks
-        //each number is the number of times the brick can get hit until it breaks
-        try {
-            blockList = new ArrayList<>();
-
-            Image imageBlock = new Image(this.getClass().getClassLoader().getResourceAsStream(BLOCK_IMAGE_1));
-
-            String rootPath = "resources/";
-            FileReader in = new FileReader(rootPath + file);
-            BufferedReader br = new BufferedReader(in);
-
-            int y = 0;
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] splitLine = line.split(",");
-                for(int i = 0; i < splitLine.length; i++){
-                    double x = i * imageBlock.getWidth();
-                    int blockHits = Integer.valueOf(splitLine[i].split("\\.")[0]);
-                    int powerUpType = Integer.valueOf(splitLine[i].split( "\\." )[1]);
-                    if(blockHits == 0){
-                        continue;
-                    }
-                    else if(blockHits == 1){
-                        imageBlock = new Image(this.getClass().getClassLoader().getResourceAsStream(BLOCK_IMAGE_1));
-                    } else if (blockHits == 2){
-                        imageBlock = new Image(this.getClass().getClassLoader().getResourceAsStream(BLOCK_IMAGE_2));
-                    } else {
-                        imageBlock = new Image(this.getClass().getClassLoader().getResourceAsStream(BLOCK_IMAGE_3));
-                    }
-                    ImageView myBlock = new ImageView(imageBlock);
-                    Block block;
-                    block = new Block(myBlock, blockHits, powerUpType,i * imageBlock.getWidth(),  y);
-                    root.getChildren().add(block.getBlock());
-                    blockList.add(block);
-                }
-                y += imageBlock.getHeight();
-            }
-        } catch (Exception ex){
-            System.out.println("file not found");
-        }
-    }
-
 
     // Create the game's "scene": what shapes will be in the game and their starting properties
     private Scene setupGame (int width, int height, Paint background) {
@@ -164,35 +142,24 @@ public class Gameplay extends Application {
         var scene = new Scene(root, width, height, background);
 
         // x and y represent the top left corner, so center it
-        var imageBouncer = new Image(this.getClass().getClassLoader().getResourceAsStream(BOUNCER_IMAGE));
+        Image imageBouncer = new Image(this.getClass().getClassLoader().getResourceAsStream(BOUNCER_IMAGE));
         myBouncer = new ImageView(imageBouncer);
         bouncer = new Bouncer(myBouncer, this);
+        bouncerList = new ArrayList<>();
+        bouncerList.add(bouncer);
 
-        var imagePaddle = new Image(this.getClass().getClassLoader().getResourceAsStream(PADDLE_IMAGE));
+        Image imagePaddle = new Image(this.getClass().getClassLoader().getResourceAsStream(PADDLE_IMAGE));
         myPaddle = new ImageView(imagePaddle);
         paddle = new Paddle(myPaddle);
-        myPaddle.setX(width / 2 - myPaddle.getBoundsInLocal().getWidth() / 2);
-        myPaddle.setY(height - myPaddle.getBoundsInLocal().getHeight());
-        readBlockConfiguration(LEVEL_ONE, root, SIZE, SIZE);
+        paddle.setInitialPosition(width, height);
 
-        level = new Text();
-        level.setText("Level:  " + levelVal);
-        level.setX(50);
-        level.setY(HEIGHT-45);
+        initializeLevel() ;
+        initializeLives();
+        initializeScore();
+        initializeHighScore();
 
-        lives = new Text();
-        lives.setText("Lives:  " + bouncer.getNumLives());
-        lives.setX(50);
-        lives.setY(HEIGHT-35);
-
-        score = new Text();
-        score.setText("Score:  " + scoreVal);
-        score.setX(50);
-        score.setY(HEIGHT-25);
-
-        highScore.setText("High Score:  " + highScoreVal);
-        highScore.setX(50);
-        highScore.setY(HEIGHT-15);
+        blockList = new ArrayList<>();
+        readBlockConfiguration(LEVEL_ONE, root, width, height, blockList);
 
         root.getChildren().add(bouncer.getBouncer());
         root.getChildren().add(paddle.getPaddle());
@@ -202,8 +169,6 @@ public class Gameplay extends Application {
         root.getChildren().add(highScore);
 
         powerUpList = new ArrayList<>();
-        bouncerList = new ArrayList<>();
-        bouncerList.add(bouncer);
 
         // respond to input
         scene.setOnKeyPressed(e -> {
@@ -216,45 +181,55 @@ public class Gameplay extends Application {
         return scene;
     }
 
+    private void initializeHighScore(){
+        highScore.setText("High Score:  " + highScoreVal);
+        highScore.setX(TEXT_XPOS);
+        highScore.setY(TEXT_SCORE_YPOS);
+    }
+
+    private void initializeScore() {
+        score = new Text();
+        score.setText("Score:  " + scoreVal);
+        score.setX(TEXT_XPOS);
+        score.setY(TEXT_SCORE_YPOS-10);
+    }
+
+    private void initializeLives() {
+        lives = new Text();
+        lives.setText("Lives:  " + bouncer.getNumLives());
+        lives.setX(TEXT_XPOS);
+        lives.setY(TEXT_SCORE_YPOS - 20);
+    }
+
+    private void initializeLevel() {
+        level = new Text();
+        level.setText("Level:  " + levelVal);
+        level.setX(TEXT_XPOS);
+        level.setY(TEXT_SCORE_YPOS - 30);
+    }
+
+
+
     // Change properties of shapes to animate them
     // Note, there are more sophisticated ways to animate shapes, but these simple ways work fine to start.
     private void step (double elapsedTime) {
-        for(int i = 0; i < bouncerList.size(); i++){
-            Bouncer currentBouncer = bouncerList.get(i);
-            currentBouncer.move(elapsedTime);
-            currentBouncer.checkIntersectPaddle(paddle);
+        bouncer.stepBouncer(bouncerList, blockList, powerUpList, paddle, root, elapsedTime, this);
+        stepPowerUp(powerUpList, paddle, bouncer, root, bouncerList, elapsedTime, this);
 
-            for(int j=0; j<blockList.size(); j++){
-                Block currentBlock = blockList.get(j);
-                currentBouncer.checkIntersectBlock(currentBlock, powerUpList, root, elapsedTime);
-                if(currentBlock.getHitsLeft()==0){
-                    blockList.remove(j);
-                }
-            }
-        }
-
-        for(int i = 0; i<powerUpList.size(); i++){
-            PowerUp currentPowerUp = powerUpList.get(i);
-            currentPowerUp.stepPowerUp(elapsedTime);
-            if(currentPowerUp.intersectsPaddle(paddle)){
-                currentPowerUp.applyPowerUp(paddle, bouncer, root, bouncerList);
-                powerUpList.remove(i);
-            }
-        }
         if(blockList.isEmpty()){
             if(levelVal==1){
                 levelVal++;
                 level.setText("Level:  " + levelVal);
                 bouncer.resetPos();
                 bouncer.incrementSpeed(40);
-                readBlockConfiguration(LEVEL_TWO, root, SIZE, SIZE);
+                readBlockConfiguration(LEVEL_TWO, root, SIZE, SIZE, blockList);
             }
             else if(levelVal ==2) {
                 levelVal++;
                 level.setText("Level:  " + levelVal);
                 bouncer.resetPos();
                 bouncer.incrementSpeed(40);
-                readBlockConfiguration(LEVEL_THREE, root, SIZE, SIZE);
+                readBlockConfiguration(LEVEL_THREE, root, SIZE, SIZE, blockList);
             }
             else {
                 outcomeScreen(myStage, true);
@@ -286,13 +261,18 @@ public class Gameplay extends Application {
         }
     }
 
-    public void changeScore(){
+    public int getScore(){
+        return this.scoreVal;
+    }
+
+    public void changeScore(int newScore){
+        this.scoreVal = newScore;
         score.setText("Score:  " + scoreVal);
     }
 
     // What to do each time a key is pressed
-    private void handleKeyInput (KeyCode code) throws IOException {
-        paddle.handleKeyInput(code);
+    private void handleKeyInput(KeyCode code) throws IOException {
+        paddle.handleKeyInput(code, HEIGHT);
 
         if(code.equals(KeyCode.L)){
             bouncer.increaseNumLives();
@@ -301,6 +281,12 @@ public class Gameplay extends Application {
         else if(code.equals(KeyCode.R)){
             bouncer.resetPos();
         }
+        //else if(code.equals(KeyCode.COMMA)){
+        //    cornerTest = Tester.configureTest(bouncer, CORNER_FILE);
+        //}
+        //else if(code.equals(KeyCode.PERIOD)){
+        //    breakTest = Tester.configureTest(bouncer, BREAK_FILE);
+        //}
         else if(code.equals(KeyCode.SPACE)){
             Block firstBlock = blockList.get(0);
             root.getChildren().remove(firstBlock.getBlock());
@@ -316,13 +302,7 @@ public class Gameplay extends Application {
         Image img;
         if(win) img = new Image(WIN_IMAGE);
         else img = new Image(LOSE_IMAGE);
-        ImageView imgView = new ImageView(img);
-        sp.getChildren().add(imgView);
-        //Adding HBox to the scene
-        Scene scene = new Scene(sp);
-        stage.setScene(scene);
-        stage.show();
-        scene.setOnKeyPressed(e -> checkGameStart(e.getCode(), stage));
+        createStage( stage, sp, img );
     }
 
     /**
