@@ -40,15 +40,9 @@ public class Gameplay extends Application {
     public static final String LEVEL_ONE = "config1.txt";
     public static final String LEVEL_TWO = "config2.txt";
     public static final String LEVEL_THREE = "config3.txt";
-    public int scoreVal;
-    public int levelVal;
-    public int highScoreVal;
-    private boolean cornerTest = false;
-    private boolean breakTest = false;
-    private boolean lifeTest = false;
-    public static final String CORNER_FILE = "corner.txt";
-    public static final String BREAK_FILE = "break.txt";
-    public static final String LIFE_FILE = "life.txt";
+    private int scoreVal;
+    private int levelVal;
+    private int highScoreVal;
     private static final int TEXT_XPOS = 35;
     private static final int TEXT_SCORE_YPOS = HEIGHT - 15;
 
@@ -69,21 +63,6 @@ public class Gameplay extends Application {
     private Stage myStage;
     private Timeline myAnimation;
     private Tester test;
-    private Block block;
-
-    /**
-    private List<Block> blockList;
-    private List<PowerUp> powerUpList;
-    private List<Bouncer> bouncerList;
-
-    private static Text livesText;
-    private Text level;
-    private static Text scoreText;
-    private static Stage myStage;
-    private Timeline myAnimation;
-    private int score = 0;
-*/
-
 
 
     /**
@@ -114,9 +93,7 @@ public class Gameplay extends Application {
 
     private void checkGameStart(KeyCode code, Stage stage){
         if(code.isArrowKey()){
-//            levelVal = 1;
-            //FOR TESTER
-            levelVal = 2;
+            levelVal = 1;
             startGame(stage);
         }
     }
@@ -163,8 +140,8 @@ public class Gameplay extends Application {
         initializeHighScore();
 
         blockList = new ArrayList<>();
-//        readBlockConfiguration(LEVEL_ONE, root, width, height, blockList);
-        readBlockConfiguration(LEVEL_TWO, root, width, height, blockList);
+        readBlockConfiguration(LEVEL_ONE, root, width, height, blockList);
+//        readBlockConfiguration(LEVEL_TWO, root, width, height, blockList);
 
         root.getChildren().add(bouncer.getBouncer());
         root.getChildren().add(paddle.getPaddle());
@@ -220,51 +197,31 @@ public class Gameplay extends Application {
     // Change properties of shapes to animate them
     // Note, there are more sophisticated ways to animate shapes, but these simple ways work fine to start.
     private void step (double elapsedTime) {
-            bouncer.stepBouncer(bouncerList, blockList, powerUpList, paddle, root, elapsedTime, this);
-            stepPowerUp(powerUpList, paddle, bouncer, root, bouncerList, elapsedTime, this);
-
-            test.step( bouncer, paddle, block, bouncerList, myAnimation, this );
-
-            if(blockList.isEmpty()){
-                if(levelVal==1){
-                    levelVal++;
-                    level.setText("Level:  " + levelVal);
-                    test = new Tester (levelVal);
-                    bouncer.resetPos();
-                    bouncer.incrementSpeed(40);
-                    readBlockConfiguration(LEVEL_TWO, root, SIZE, SIZE, blockList);
-                }
-                else if(levelVal ==2) {
-                    levelVal++;
-                    level.setText("Level:  " + levelVal);
-                    test = new Tester (levelVal);
-                    bouncer.resetPos();
-                    bouncer.incrementSpeed(40);
-                    readBlockConfiguration(LEVEL_THREE, root, SIZE, SIZE, blockList);
-                }
-                else {
-                    outcomeScreen(myStage, true);
-                }
-            }
-            if(cornerTest){
-                if(bouncer.getBouncer().getX()== bouncer.getBouncer().getY() && bouncer.getBouncer().getY()>30){
-                    System.out.println("Corner Test Passes!");
-                    myAnimation.pause();
-                }
-            }
-
-            if(breakTest){
-
-            }
-
-            if(lifeTest){
-                if(bouncer.getNumLives()==2){
-                    System.out.println("Lives Test Passes!");
-                    myAnimation.pause();
-                }
-            }
+        bouncer.stepBouncer(bouncerList, blockList, powerUpList, paddle, root, elapsedTime, this);
+        stepPowerUp(powerUpList, paddle, bouncer, root, bouncerList, elapsedTime, this);
+        test.step( bouncer, paddle, blockList, bouncerList, myAnimation, this );
+        if(blockList.isEmpty()) {
+            raiseLevel();
         }
+    }
 
+
+    private void raiseLevel() {
+        levelVal++;
+        level.setText( "Level:  " + levelVal );
+        test = new Tester( levelVal );
+        bouncer.resetPos();
+        bouncer.incrementSpeed( 40 );
+        if (levelVal == 2) {
+            readBlockConfiguration( LEVEL_TWO, root, SIZE, SIZE, blockList );
+        }
+        else if (levelVal == 3) {
+            readBlockConfiguration( LEVEL_THREE, root, SIZE, SIZE, blockList );
+        } else {
+            outcomeScreen( myStage, true );
+
+        }
+    }
 
     public void changeLives(int numLives){
         lives.setText("Lives:  "+ numLives);
@@ -285,13 +242,15 @@ public class Gameplay extends Application {
     // What to do each time a key is pressed
     private void handleKeyInput(KeyCode code) throws IOException, InterruptedException {
         paddle.handleKeyInput(code, HEIGHT);
-        test.handleKeyInput(code, bouncer, paddle, block, root, powerUpList, bouncerList, myAnimation, this);
+        test.handleKeyInput(code, bouncer, paddle,root, powerUpList, this, blockList);
         if(code.equals(KeyCode.L)){
             bouncer.increaseNumLives();
             changeLives(bouncer.getNumLives());
         }
         else if(code.equals(KeyCode.R)){
-            bouncer.resetPos();
+            for(Bouncer each: bouncerList){
+                each.resetPos();
+            }
         }
 
         else if(code.equals(KeyCode.SPACE)){

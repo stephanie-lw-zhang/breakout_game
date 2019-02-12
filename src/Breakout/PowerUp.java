@@ -32,7 +32,6 @@ abstract public class PowerUp {
 
     public Boolean intersectsPaddle(Paddle paddle) {
         return myPowerUp.intersects(paddle.getPaddleBounds());
-
     }
 
     public void disappears(Group root){

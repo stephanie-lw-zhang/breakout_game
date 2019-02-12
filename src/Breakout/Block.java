@@ -66,7 +66,6 @@ public class Block {
         } else {
             return new AddPointsPowerUp();
         }
-
     }
 
     public Boolean wasDestroyed(){
@@ -78,8 +77,6 @@ public class Block {
         //each line represents a line of bricks
         //each number is the number of times the brick can get hit until it breaks
         try {
-
-//            Image imageBlock = new Image(this.getClass().getClassLoader().getResourceAsStream(BLOCK_IMAGE_1));
             Image imageBlock = new Image(BLOCK_IMAGE_1);
 
 

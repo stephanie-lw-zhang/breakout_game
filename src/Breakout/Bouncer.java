@@ -74,7 +74,6 @@ public class Bouncer {
             myVelocityX *=-1;
         }
         if(myBouncer.getY()>screenWidth-myBouncer.getImage().getWidth()){
-            System.out.println(bouncerList.size());
             if(bouncerList.size() == 1){
                 myBouncer.setX(screenHeight / 2 - myBouncer.getBoundsInLocal().getWidth() / 2);
                 myBouncer.setY(screenWidth / 2 - myBouncer.getBoundsInLocal().getHeight() / 2);
