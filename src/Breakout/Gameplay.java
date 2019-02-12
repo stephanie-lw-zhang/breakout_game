@@ -43,12 +43,6 @@ public class Gameplay extends Application {
     public int scoreVal;
     public int levelVal;
     public int highScoreVal;
-    private boolean cornerTest = false;
-    private boolean breakTest = false;
-    private boolean lifeTest = false;
-    public static final String CORNER_FILE = "corner.txt";
-    public static final String BREAK_FILE = "break.txt";
-    public static final String LIFE_FILE = "life.txt";
     private static final int TEXT_XPOS = 35;
     private static final int TEXT_SCORE_YPOS = HEIGHT - 15;
 
@@ -68,21 +62,7 @@ public class Gameplay extends Application {
     private Text highScore;
     private Stage myStage;
     private Timeline myAnimation;
-
-    /**
-    private List<Block> blockList;
-    private List<PowerUp> powerUpList;
-    private List<Bouncer> bouncerList;
-
-    private static Text livesText;
-    private Text level;
-    private static Text scoreText;
-    private static Stage myStage;
-    private Timeline myAnimation;
-    private int score = 0;
-*/
-
-
+    private Tester test;
 
     /**
      * Initialize what will be displayed and how it will be updated.
@@ -121,7 +101,7 @@ public class Gameplay extends Application {
         // attach scene to the stage and display it
         scoreVal = 0;
         myScene = setupGame(HEIGHT, WIDTH, BACKGROUND);
-
+        test = new Tester(levelVal);
         stage.setScene(myScene);
         stage.setTitle(TITLE);
         stage.show();
@@ -215,11 +195,13 @@ public class Gameplay extends Application {
     private void step (double elapsedTime) {
         bouncer.stepBouncer(bouncerList, blockList, powerUpList, paddle, root, elapsedTime, this);
         stepPowerUp(powerUpList, paddle, bouncer, root, bouncerList, elapsedTime, this);
+        test.step(bouncer, paddle, myAnimation, blockList);
 
         if(blockList.isEmpty()){
             if(levelVal==1){
                 levelVal++;
                 level.setText("Level:  " + levelVal);
+                test = new Tester(levelVal);
                 bouncer.resetPos();
                 bouncer.incrementSpeed(40);
                 readBlockConfiguration(LEVEL_TWO, root, SIZE, SIZE, blockList);
@@ -227,29 +209,13 @@ public class Gameplay extends Application {
             else if(levelVal ==2) {
                 levelVal++;
                 level.setText("Level:  " + levelVal);
+                test = new Tester(levelVal);
                 bouncer.resetPos();
                 bouncer.incrementSpeed(40);
                 readBlockConfiguration(LEVEL_THREE, root, SIZE, SIZE, blockList);
             }
             else {
                 outcomeScreen(myStage, true);
-            }
-        }
-        if(cornerTest){
-            if(bouncer.getBouncer().getX()== bouncer.getBouncer().getY() && bouncer.getBouncer().getY()>30){
-                System.out.println("Corner Test Passes!");
-                myAnimation.pause();
-            }
-        }
-
-        if(breakTest){
-
-        }
-
-        if(lifeTest){
-            if(bouncer.getNumLives()==2){
-                System.out.println("Lives Test Passes!");
-                myAnimation.pause();
             }
         }
     }
@@ -273,7 +239,7 @@ public class Gameplay extends Application {
     // What to do each time a key is pressed
     private void handleKeyInput(KeyCode code) throws IOException {
         paddle.handleKeyInput(code, HEIGHT);
-
+        test.handleKeyInput(code, bouncer, paddle, root, blockList);
         if(code.equals(KeyCode.L)){
             bouncer.increaseNumLives();
             changeLives(bouncer.getNumLives());
@@ -281,12 +247,7 @@ public class Gameplay extends Application {
         else if(code.equals(KeyCode.R)){
             bouncer.resetPos();
         }
-        //else if(code.equals(KeyCode.COMMA)){
-        //    cornerTest = Tester.configureTest(bouncer, CORNER_FILE);
-        //}
-        //else if(code.equals(KeyCode.PERIOD)){
-        //    breakTest = Tester.configureTest(bouncer, BREAK_FILE);
-        //}
+
         else if(code.equals(KeyCode.SPACE)){
             Block firstBlock = blockList.get(0);
             root.getChildren().remove(firstBlock.getBlock());

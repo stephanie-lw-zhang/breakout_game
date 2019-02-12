@@ -1,22 +1,30 @@
 package Breakout;
 
+import javafx.animation.Timeline;
+import javafx.scene.Group;
 import javafx.scene.input.KeyCode;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 
 public class Tester {
 
     public static final String CORNER_FILE = "corner.txt";
     public static final String BREAK_FILE = "break.txt";
     public static final String LIFE_FILE = "life.txt";
+    public static final String PADDLE_BOUNCE_FILE = "paddleBounce.txt";
+    public static final String WALL_BOUNCE_FILE = "wallBounce.txt";
+    public static final String SIDE_BLOCK_FILE = "sideBlock.txt";
+    public static final int SIZE = 400;
 
     private boolean cornerTest;
     private boolean breakTest;
     private boolean lifeTest;
-
-
+    private boolean paddleBounceTest;
+    private boolean wallBounceTest;
+    private boolean sideBlockBounce;
+    private int blockListSize;
     private int levelNum;
 
 
@@ -25,35 +33,46 @@ public class Tester {
         cornerTest = false;
         breakTest = false;
         lifeTest = false;
+        paddleBounceTest = false;
+        wallBounceTest = false;
+        sideBlockBounce = false;
     }
 
-    public void handleKeyInput(KeyCode code, Bouncer bouncer) throws IOException{
+    public void handleKeyInput(KeyCode code, Bouncer bouncer, Paddle paddle, Group root, List blockList) throws IOException{
         if(levelNum==1){
             if(code.equals(KeyCode.COMMA)){
                 cornerTest = true;
-                this.configureTest(bouncer, CORNER_FILE);
+                this.configureTest(bouncer, paddle, CORNER_FILE, root, blockList);
             }
             else if(code.equals(KeyCode.PERIOD)){
                 breakTest = true;
-                this.configureTest(bouncer, BREAK_FILE);
+                this.configureTest(bouncer, paddle, BREAK_FILE, root, blockList);
             }
             else if(code.equals(KeyCode.SLASH)){
                 lifeTest = true;
-                this.configureTest(bouncer, LIFE_FILE);
+                this.configureTest(bouncer, paddle, LIFE_FILE, root, blockList);
             }
         }
         else if(levelNum==2){
 
         }
         else if(levelNum==3){
-
-        }
-        else{
-
+            if(code.equals(KeyCode.COMMA)){
+                paddleBounceTest = true;
+                this.configureTest(bouncer, paddle, PADDLE_BOUNCE_FILE, root, blockList);
+            }
+            else if(code.equals(KeyCode.PERIOD)){
+                wallBounceTest = true;
+                this.configureTest(bouncer, paddle, WALL_BOUNCE_FILE, root, blockList);
+            }
+            else if(code.equals(KeyCode.SLASH)){
+                sideBlockBounce = true;
+                this.configureTest(bouncer, paddle, SIDE_BLOCK_FILE, root, blockList);
+            }
         }
     }
 
-    public void configureTest(Bouncer bouncer, String fileName) throws IOException {
+    public void configureTest(Bouncer bouncer, Paddle paddle, String fileName, Group root, List blockList) throws IOException {
         String rootPath = "resources/";
         FileReader in = new FileReader(rootPath + fileName);
         BufferedReader br = new BufferedReader(in);
@@ -62,32 +81,85 @@ public class Tester {
         while ((line = br.readLine()) != null) {
             splitLine = line.split(",");
         }
+        if(fileName.equalsIgnoreCase(LIFE_FILE)) bouncer.setNumLives(3);
+        else if(fileName.equalsIgnoreCase(BREAK_FILE) | fileName.equalsIgnoreCase(SIDE_BLOCK_FILE)) {
+            Block.setPosAndPowerUp(170, 200, 0, root, blockList);
+            blockListSize = blockList.size();
+        }
         bouncer.setPos(Double.parseDouble(splitLine[0]), Double.parseDouble(splitLine[1]));
         bouncer.setVelocities(Double.parseDouble(splitLine[2]), Double.parseDouble(splitLine[3]));
     }
 
-    public void step(Bouncer bouncer){
+    public void step(Bouncer bouncer, Paddle paddle, Timeline myAnimation, List blockList){
         if(levelNum==1){
             if(cornerTest){
-
+                if(bouncer.getBouncer().getX()== bouncer.getBouncer().getY() && bouncer.getBouncer().getY()>30){
+                    System.out.println("Corner Test Passed!");
+                    myAnimation.pause();
+                }
+                else if(bouncer.getBouncer().getX()!= bouncer.getBouncer().getY() && bouncer.getBouncer().getY()>30){
+                    System.out.println("Corner Test Failed!");
+                    myAnimation.pause();
+                }
             }
-            if(breakTest){
-
+            else if(breakTest){
+               if(blockListSize > blockList.size()){
+                   System.out.println("Block Break Test Passed!");
+                   myAnimation.pause();
+               }
+               else if(bouncer.getBouncer().getY()<200){
+                   System.out.println("Block Break Test Failed!");
+                   myAnimation.pause();
+               }
             }
-            if(lifeTest){
-
+            else if(lifeTest){
+                if(bouncer.getNumLives()==2){
+                    System.out.println("Lives Test Passed!");
+                    myAnimation.pause();
+                }
+                else{
+                    System.out.println("Lives Test Failed!");
+                    myAnimation.pause();
+                }
             }
-
         }
+
         else if(levelNum==2){
 
         }
+
         else if(levelNum==3){
-
-        }
-        else{
-
+            if(paddleBounceTest){
+                paddle.setInitialPosition(SIZE,SIZE);
+                if(bouncer.getBouncer().getX()== bouncer.getBouncer().getY() && bouncer.getBouncer().getY()>150){
+                    System.out.println("Paddle Bounce Test Passed!");
+                    myAnimation.pause();
+                }
+                else if(bouncer.getBouncer().getY()>SIZE){
+                    System.out.println("Paddle Bounce Test Failed!");
+                    myAnimation.pause();
+                }
+            }
+            else if(wallBounceTest){
+                if(bouncer.getBouncer().getX()>200){
+                    System.out.println("Wall Bounce Test Passed!");
+                    myAnimation.pause();
+                }
+                else if(bouncer.getBouncer().getX()<-1){
+                    System.out.println("Wall Bounce Test Failed!");
+                    myAnimation.pause();
+                }
+            }
+            else if(sideBlockBounce){
+                if(bouncer.getBouncer().getX()<20){
+                    System.out.println("Side Block Bounce Test Passed!");
+                    myAnimation.pause();
+                }
+                else if(bouncer.getBouncer().getX()>170){
+                    System.out.println("Side Block Bounce Test Failed!");
+                    myAnimation.pause();
+                }
+            }
         }
     }
-
 }

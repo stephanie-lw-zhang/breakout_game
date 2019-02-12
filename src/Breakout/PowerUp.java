@@ -31,11 +31,7 @@ abstract public class PowerUp {
     }
 
     public Boolean intersectsPaddle(Paddle paddle) {
-        if (myPowerUp.intersects(paddle.getPaddleBounds())) {
-            return Boolean.TRUE;
-        } else{
-            return Boolean.FALSE;
-        }
+        return myPowerUp.intersects(paddle.getPaddleBounds());
     }
 
     public void disappears(Group root){

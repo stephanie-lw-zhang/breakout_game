@@ -46,4 +46,8 @@ public class Paddle {
         myPaddle.setY(height - myPaddle.getBoundsInLocal().getHeight());
     }
 
+    public void setPos(double x){
+        myPaddle.setX(x);
+    }
+
 }

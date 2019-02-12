@@ -62,7 +62,6 @@ public class Block {
         } else {
             return new AddPointsPowerUp();
         }
-
     }
 
     public Boolean wasDestroyed(){
@@ -74,8 +73,6 @@ public class Block {
         //each line represents a line of bricks
         //each number is the number of times the brick can get hit until it breaks
         try {
-
-//            Image imageBlock = new Image(this.getClass().getClassLoader().getResourceAsStream(BLOCK_IMAGE_1));
             Image imageBlock = new Image(BLOCK_IMAGE_1);
 
 
@@ -133,6 +130,13 @@ public class Block {
         blockList.add(newBlock);
     }
 
+    public static void setPosAndPowerUp(double x, double y, int powerUpType, Group root, List<Block> blockList){
+        Image imageBlock = new Image(BLOCK_IMAGE_1);
+        ImageView imageViewBlock = new ImageView(imageBlock);
+        Block newBlock = new Block(imageViewBlock, 1, powerUpType, x, y);
+        root.getChildren().add(newBlock.getBlock());
+        blockList.add(newBlock);
+    }
 
 }
 
