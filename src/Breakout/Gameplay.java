@@ -74,7 +74,7 @@ public class Gameplay extends Application {
     private List<PowerUp> powerUpList;
     private List<Bouncer> bouncerList;
 
-    private static Text lives;
+    private static Text livesText;
     private Text level;
     private static Text scoreText;
     private static Stage myStage;
@@ -144,7 +144,7 @@ public class Gameplay extends Application {
         // x and y represent the top left corner, so center it
         Image imageBouncer = new Image(this.getClass().getClassLoader().getResourceAsStream(BOUNCER_IMAGE));
         myBouncer = new ImageView(imageBouncer);
-        bouncer = new Bouncer(myBouncer, this);
+        bouncer = new Bouncer(myBouncer, this, 3);
         bouncerList = new ArrayList<>();
         bouncerList.add(bouncer);
 

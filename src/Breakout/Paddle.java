@@ -22,7 +22,7 @@ public class Paddle {
     }
 
     public void handleKeyInput (KeyCode code, int height) {
-        if (code == KeyCode.RIGHT & this.getPaddle().getX()< height - this.getPaddle().getImage().getWidth()) {
+        if (code == KeyCode.RIGHT & this.getPaddle().getX()< height - this.getPaddle().getBoundsInParent().getWidth()) {
             myPaddle.setX(myPaddle.getX() + MOVER_SPEED);
         }
         else if (code == KeyCode.LEFT & this.getPaddle().getX()>0) {

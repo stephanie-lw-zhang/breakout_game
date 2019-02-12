@@ -21,10 +21,10 @@ public class Bouncer {
     private Gameplay game;
 
 
-    public Bouncer(ImageView myBouncer, Gameplay game){
+    public Bouncer(ImageView myBouncer, Gameplay game, int numLives){
         this.myBouncer = myBouncer;
         this.game = game;
-        numLives = 3;
+        this.numLives = numLives;
         myBouncer.setX(screenHeight / 2 - myBouncer.getBoundsInLocal().getWidth() / 2);
         myBouncer.setY(screenWidth / 2 - myBouncer.getBoundsInLocal().getHeight() / 2);
     }
@@ -35,6 +35,10 @@ public class Bouncer {
 
     public int getNumLives(){
         return numLives;
+    }
+
+    public void setNumLives(int lives){
+        this.numLives = lives;
     }
 
     public void setPos(double x, double y){
@@ -56,7 +60,7 @@ public class Bouncer {
         myVelocityY = y;
     }
 
-    private void move(double elapsedTime) {
+    private void move(double elapsedTime, List<Bouncer> bouncerList, Group root) {
         myBouncer.setX(myBouncer.getX() - myVelocityX * BOUNCER_SPEED * elapsedTime);
         myBouncer.setY(myBouncer.getY() - myVelocityY * 0.5 * BOUNCER_SPEED * elapsedTime);
 
@@ -70,10 +74,16 @@ public class Bouncer {
             myVelocityX *=-1;
         }
         if(myBouncer.getY()>screenWidth-myBouncer.getImage().getWidth()){
-            myBouncer.setX(screenHeight / 2 - myBouncer.getBoundsInLocal().getWidth() / 2);
-            myBouncer.setY(screenWidth / 2 - myBouncer.getBoundsInLocal().getHeight() / 2);
-            numLives--;
-            game.changeLives(this.getNumLives());
+            System.out.println(bouncerList.size());
+            if(bouncerList.size() == 1){
+                myBouncer.setX(screenHeight / 2 - myBouncer.getBoundsInLocal().getWidth() / 2);
+                myBouncer.setY(screenWidth / 2 - myBouncer.getBoundsInLocal().getHeight() / 2);
+                this.setNumLives(this.getNumLives()-1);
+                game.changeLives(this.getNumLives());
+            } else {
+                root.getChildren().remove(myBouncer);
+                bouncerList.remove(bouncerList.indexOf(this));
+            }
         }
     }
 
@@ -95,22 +105,26 @@ public class Bouncer {
         game.changeScore(game.getScore() + block.getTotalHits()*100);
     }
 
-    //will check for intersections with blocks rather than rectangles
-    private void checkIntersectBlock(Block block, List<PowerUp> powerUpList, Group root, Gameplay game){
-        if(myBouncer.intersects(block.getBlockBounds())) {
-            block.gotHit();
-            if(this.topBottom(block)){
-                myVelocityY *= -1;
 
+    //will check for intersections with blocks rather than rectangles
+    private void checkIntersectBlock(Block block, List<PowerUp> powerUpList, List<Block> blockList, List<Bouncer> bouncerList, Group root, Gameplay game, Double elapsedTime){
+        if(myBouncer.intersects(block.getBlockBounds())) {
+            if (this.topBottom(block)) {
+                myVelocityY *= -1;
             } else {
                 myVelocityX *= -1;
             }
-        }
-        if(block.wasDestroyed()){
-            updateScore(game, block);
-            root.getChildren().remove(block.getBlock());
-            if(block.isPowerUp()){
-                createPowerUp(block, powerUpList, root);
+            this.move(elapsedTime, bouncerList, root);
+            block.takeHit();
+            if(block.wasDestroyed()){
+                updateScore(game, block);
+                root.getChildren().remove(block.getBlock());
+                blockList.remove(blockList.indexOf(block));
+                if(block.isPowerUp()){
+                    createPowerUp(block, powerUpList, root);
+                }
+            } else {
+                block.replaceBlock(root, blockList);
             }
         }
     }
@@ -124,15 +138,11 @@ public class Bouncer {
     public void stepBouncer(List<Bouncer> bouncerList,  List<Block> blockList, List<PowerUp> powerUpList, Paddle paddle, Group root, double elapsedTime, Gameplay game) {
         for(int i = 0; i < bouncerList.size(); i++){
             Bouncer currentBouncer = bouncerList.get(i);
-            currentBouncer.move(elapsedTime);
+            currentBouncer.move(elapsedTime, bouncerList, root);
             currentBouncer.checkIntersectPaddle(paddle);
-
             for(int j=0; j<blockList.size(); j++){
                 Block currentBlock = blockList.get(j);
-                currentBouncer.checkIntersectBlock(currentBlock, powerUpList, root, game);
-                if(currentBlock.getHitsLeft()==0){
-                    blockList.remove(j);
-                }
+                currentBouncer.checkIntersectBlock(currentBlock, powerUpList, blockList, bouncerList, root, game, elapsedTime);
             }
         }
     }
@@ -145,8 +155,7 @@ public class Bouncer {
     public void createAdditionalBouncer(Group root, List<Bouncer> bouncerList){
         var imageBouncer = new Image("ball.gif");
         ImageView otherBouncer = new ImageView(imageBouncer);
-        Bouncer bouncer = new Bouncer(otherBouncer, game);
-        bouncer.numLives = 1;
+        Bouncer bouncer = new Bouncer(otherBouncer, game, 1);
         root.getChildren().add(otherBouncer);
         bouncerList.add(bouncer);
     }
