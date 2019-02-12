@@ -12,11 +12,9 @@ public class Bouncer {
     private double myVelocityX = 1;
     private double myVelocityY = 1;
     private int numLives;
-    private int score = 0;
     private ImageView myBouncer;
     private double screenWidth = 400;
     private double screenHeight = 400;
-    public static final String SIZEPWR_IMAGE = "sizepower.gif";
     private Gameplay game;
 
 
@@ -36,10 +34,6 @@ public class Bouncer {
         return numLives;
     }
 
-    public int getScore(){
-        return score;
-    }
-
     public void setPos(double x, double y){
         myBouncer.setX(x);
         myBouncer.setY(y);
@@ -47,6 +41,10 @@ public class Bouncer {
 
     public void incrementSpeed(int speed){
         this.BOUNCER_SPEED +=speed;
+    }
+
+    public void incrementScore(int score){
+        game.scoreVal+=score;
     }
 
     public void resetPos(){
@@ -97,6 +95,8 @@ public class Bouncer {
     //will check for intersections with blocks rather than rectangles
     public void checkIntersectBlock(Block block, ArrayList powerUpList, Group root, double elapsedTime){
         if(myBouncer.intersects(block.getBlockBounds())) {
+            incrementScore(100);
+            game.changeScore();
             block.gotHit();
             if(this.topBottom(block)){
                 myVelocityY *= -1;

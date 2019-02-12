@@ -39,14 +39,4 @@ public class Paddle {
         myPaddle.setFitWidth(myPaddle.getBoundsInParent().getWidth() * 1.5);
     }
 
-//    public ImageView createPaddle(Group root, int width, int height){
-//        var imagePaddle = new Image(this.getClass().getClassLoader().getResourceAsStream(PADDLE_IMAGE));
-//        myPaddle = new ImageView(imagePaddle);
-//        myPaddle.setX(width / 2 - myPaddle.getBoundsInLocal().getWidth() / 2);
-//        myPaddle.setY(height - myPaddle.getBoundsInLocal().getHeight());
-//        root.getChildren().add(myPaddle);
-//        return myPaddle;
-//    }
-
-
 }
