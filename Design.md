@@ -3,7 +3,9 @@
 - Make the code flexible (easy to add new features), especially through abstraction. 
 # How to add new features to your project
 - To add a new powerup, create a subclass that extends the superclass named PowerUp. The subclass must implement the abstract method applyPowerUp, which is the method that applies the power up, such as making the paddle wider. Note here that for this method, no need to write an if statement for “if the powerup intersects with the paddle” because that is written in another method (stepPowerUp) that calls applyPowerUp. However, you have to include this.disappears(root) to make the powerUp disappear after intersecting with the paddle. Any additional powerup subclass must also implement the constructor by passing in an image ideally from the resources folder.
+
 - To add new levels, first create a new block configuration file in the resources folder. The configuration file consists of a text file. Each block or lack thereof is represented by two numbers separated by a period, and the information for each block or lack thereof is separated by a comma. The first number before the period represents the type of block (1 is a one-hit block, 2 is a two-hit block, etc) and the second numbers is the type of power up. Each line of the text file corresponds to a different height in the game. After the configuration file is set up, the private method raiseLevel() must be edited to add a new else if test. This else if test will check if the previous level has been completed and reads in a new block configuration with the new file that was just created.
+
 - To create a new block that requires more hits to be destroyed, change the parameters hits and imageView when initializing the block. Also add another if test in the Block.readBlockConfiguration method to recognize this new number of hits. To add this Block type to the Gameplay scene, change a configuration file to include the new number of hits in one of the positions before the period (ie “4.X” if the new number of hits is 4).
 # Major design choices and trade-offs 
 - The PowerUp class is an abstract class with subclasses for each specific powerup.
@@ -32,7 +34,9 @@
         - It included nine boolean values that had to be kept track of as the methods were called especially in step, which could cause a lot of confusion
 # Any assumptions or decisions made to simplify or resolve ambiguities in your the project's functionality
 - We assumed the format of the file read into the method that determines the block configuration, named “readBlockConfiguration” in the Block class. The format are lines of numbers separated by commas. Each number has a single digit before and after the decimal point, and the digit can only be a number between 0 and 3 (inclusive). The integer before the decimal determines how many hits it takes for the block to get destroyed, and the integer after the decimal determines which powerup the block releases if destroyed (with 0 meaning no powerup).
+
 - We also limited the game to 3 levels, with hardcoded block configurations for each level. 
+
 - The High score feature did not carry over between runs of the program. However, it did carry over between multiple restarts of the same run.
 
 
