@@ -66,7 +66,7 @@ public class Gameplay extends Application {
 
 
     /**
-     * Initialize what will be displayed and how it will be updated.
+     * Display the splash screen and wait for the user to press an Arrow Key
      */
     @Override
     public void start (Stage stage) {
@@ -97,6 +97,10 @@ public class Gameplay extends Application {
             startGame(stage);
         }
     }
+    
+    /**
+     * Initialize what will be displayed and how it will be updated.
+     */
 
     public void startGame (Stage stage){
         // attach scene to the stage and display it
@@ -222,6 +226,10 @@ public class Gameplay extends Application {
 
         }
     }
+    
+    /**
+     * Update the number of lives on the display
+     */
 
     public void changeLives(int numLives){
         lives.setText("Lives:  "+ numLives);
@@ -229,10 +237,18 @@ public class Gameplay extends Application {
             outcomeScreen(myStage, false);
         }
     }
+    
+    /**
+     * Returns the score value instance variable.
+     */
 
     public int getScore(){
         return this.scoreVal;
     }
+    
+    /**
+     * Updates the scoreVal instance variable and updates the display on screen
+     */
 
     public void changeScore(int newScore){
         this.scoreVal = newScore;
