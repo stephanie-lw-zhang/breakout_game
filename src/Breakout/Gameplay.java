@@ -198,8 +198,7 @@ public class Gameplay extends Application {
 
 
 
-    // Change properties of shapes to animate them
-    // Note, there are more sophisticated ways to animate shapes, but these simple ways work fine to start.
+    // Change properties of Objects to animate them
     private void step (double elapsedTime) {
         bouncer.stepBouncer(bouncerList, blockList, powerUpList, paddle, root, elapsedTime, this);
         stepPowerUp(powerUpList, paddle, bouncer, root, bouncerList, elapsedTime, this);
@@ -230,7 +229,6 @@ public class Gameplay extends Application {
     /**
      * Update the number of lives on the display
      */
-
     public void changeLives(int numLives){
         lives.setText("Lives:  "+ numLives);
         if(numLives == 0) {
@@ -241,7 +239,6 @@ public class Gameplay extends Application {
     /**
      * Returns the score value instance variable.
      */
-
     public int getScore(){
         return this.scoreVal;
     }
@@ -249,7 +246,6 @@ public class Gameplay extends Application {
     /**
      * Updates the scoreVal instance variable and updates the display on screen
      */
-
     public void changeScore(int newScore){
         this.scoreVal = newScore;
         score.setText("Score:  " + scoreVal);
