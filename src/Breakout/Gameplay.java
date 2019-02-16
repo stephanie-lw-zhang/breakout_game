@@ -66,7 +66,7 @@ public class Gameplay extends Application {
 
 
     /**
-     * Initialize what will be displayed and how it will be updated.
+     * Display the splash screen and wait for the user to press an Arrow Key
      */
     @Override
     public void start (Stage stage) {
@@ -97,6 +97,10 @@ public class Gameplay extends Application {
             startGame(stage);
         }
     }
+    
+    /**
+     * Initialize what will be displayed and how it will be updated.
+     */
 
     public void startGame (Stage stage){
         // attach scene to the stage and display it
@@ -194,8 +198,7 @@ public class Gameplay extends Application {
 
 
 
-    // Change properties of shapes to animate them
-    // Note, there are more sophisticated ways to animate shapes, but these simple ways work fine to start.
+    // Change properties of Objects to animate them
     private void step (double elapsedTime) {
         bouncer.stepBouncer(bouncerList, blockList, powerUpList, paddle, root, elapsedTime, this);
         stepPowerUp(powerUpList, paddle, bouncer, root, bouncerList, elapsedTime, this);
@@ -222,18 +225,27 @@ public class Gameplay extends Application {
 
         }
     }
-
+    
+    /**
+     * Update the number of lives on the display
+     */
     public void changeLives(int numLives){
         lives.setText("Lives:  "+ numLives);
         if(numLives == 0) {
             outcomeScreen(myStage, false);
         }
     }
-
+    
+    /**
+     * Returns the score value instance variable.
+     */
     public int getScore(){
         return this.scoreVal;
     }
-
+    
+    /**
+     * Updates the scoreVal instance variable and updates the display on screen
+     */
     public void changeScore(int newScore){
         this.scoreVal = newScore;
         score.setText("Score:  " + scoreVal);

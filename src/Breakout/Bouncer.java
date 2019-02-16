@@ -20,7 +20,10 @@ public class Bouncer {
     private double screenHeight = 400;
     private Gameplay game;
 
-
+    /**
+     * The constructor: takes an ImageView, a game, and number of lives
+     * Sets the ball in the middle of the screen and initializes instance variables
+     */
     public Bouncer(ImageView myBouncer, Gameplay game, int numLives){
         this.myBouncer = myBouncer;
         this.game = game;
@@ -28,33 +31,55 @@ public class Bouncer {
         myBouncer.setX(screenHeight / 2 - myBouncer.getBoundsInLocal().getWidth() / 2);
         myBouncer.setY(screenWidth / 2 - myBouncer.getBoundsInLocal().getHeight() / 2);
     }
-
+    
+    /**
+     * Returns the ImageView instance variable
+     */
     public ImageView getBouncer(){
         return myBouncer;
     }
-
+    
+    /**
+     * Returns the number of lives instance variable
+     */
     public int getNumLives(){
         return numLives;
     }
-
+    
+    /**
+     * Changes the value of the number of lives to the parameter value
+     */
     public void setNumLives(int lives){
         this.numLives = lives;
     }
-
+    
+    /**
+     * Sets the position of the bouncer to the parameters with coordinates (x,y)
+     */
     public void setPos(double x, double y){
         myBouncer.setX(x);
         myBouncer.setY(y);
     }
-
+    
+    /**
+     * Increases the speed of the bouncer by a paramter value
+     */
     public void incrementSpeed(int speed){
         this.BOUNCER_SPEED +=speed;
     }
-
+    
+    /**
+     * Resets the Bouncer to the center of the screen
+     */
     public void resetPos(){
         myBouncer.setX(screenHeight / 2 - myBouncer.getBoundsInLocal().getWidth() / 2);
         myBouncer.setY(screenWidth / 2 - myBouncer.getBoundsInLocal().getHeight() / 2);
     }
-
+    
+    /**
+     * Manually sets the velocity of the Bouncer to be multiplied by paramter values
+     * x magnifies the X velocity, and y magnifies the Y velocity
+     */
     public void setVelocities(double x, double y){
         myVelocityX = x;
         myVelocityY = y;
@@ -134,6 +159,9 @@ public class Bouncer {
         }
     }
 
+    /**
+     * Updates the Bouncers in a list, checks that they move correctly and intersect specific objects correctly
+     */
     public void stepBouncer(List<Bouncer> bouncerList,  List<Block> blockList, List<PowerUp> powerUpList, Paddle paddle, Group root, double elapsedTime, Gameplay game) {
         for(int i = 0; i < bouncerList.size(); i++){
             Bouncer currentBouncer = bouncerList.get(i);
@@ -146,11 +174,17 @@ public class Bouncer {
         }
     }
 
+    /**
+     * Increases the number of lives a bouncer has by one
+     */
     public void increaseNumLives(){
         numLives++;
     }
 
 
+    /**
+     * creates a new Bouncer object with one life and adds it to the scene and bouncerList
+     */
     public void createAdditionalBouncer(Group root, List<Bouncer> bouncerList){
         var imageBouncer = new Image("ball.gif");
         ImageView otherBouncer = new ImageView(imageBouncer);

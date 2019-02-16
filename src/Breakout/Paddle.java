@@ -5,7 +5,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 
 /**
- * Class for the paddle. 
+ * Class for the paddle.
  */
 public class Paddle {
 
