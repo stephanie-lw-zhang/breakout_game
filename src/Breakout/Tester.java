@@ -39,6 +39,9 @@ public class Tester {
     private int levelNum;
 
 
+    /**
+     * Tester constructor, takes a level number and initializes all booleans to false
+     */
     public Tester(int levelNum) {
         this.levelNum = levelNum;
         cornerTest = false;
@@ -48,7 +51,10 @@ public class Tester {
         wallBounceTest = false;
         sideBlockBounce = false;
     }
-
+    
+    /**
+     * Determines how to interpret the key inputs ",",".","/" based on the Level number
+     */
     public void handleKeyInput(KeyCode code, Bouncer bouncer, Paddle paddle, Group root, List<PowerUp> powerUpList, Gameplay game, List<Block> blockList) throws IOException {
         if (levelNum == 1) {
             if (code.equals( KeyCode.COMMA )) {
@@ -87,7 +93,9 @@ public class Tester {
     }
 
 
-
+    /**
+     * Reads in a test configuration file along with Gameplay instance variables to create tests
+     */
     public void configureTest(Bouncer bouncer, Paddle paddle, String fileName, Group root, List<PowerUp> powerUpList, Gameplay game, List<Block> blockList) throws IOException {
         String rootPath = "resources/";
         FileReader in = new FileReader( rootPath + fileName );
@@ -110,6 +118,10 @@ public class Tester {
     }
 
 
+    /**
+     * As animation functions, checks necessary conditions and pauses animation, issues pass or fail statements
+     * Takes Gameplay instance variables as parameters
+     */
     public void step(Bouncer bouncer, Paddle paddle, List<Block> blockList, List<Bouncer> bouncerList, Timeline myAnimation, Gameplay game) {
         if (levelNum == 1) {
             if (cornerTest) {
