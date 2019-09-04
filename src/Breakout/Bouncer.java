@@ -11,7 +11,7 @@ import static Breakout.PowerUp.createPowerUp;
 
 public class Bouncer {
 
-    private int BOUNCER_SPEED = 100;
+    private int BOUNCER_SPEED = 250;
     private double myVelocityX = 1;
     private double myVelocityY = 1;
     private int numLives;

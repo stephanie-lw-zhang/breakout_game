@@ -12,7 +12,7 @@ public class Paddle {
     private ImageView myPaddle;
     private double paddleWidth;
 
-    public static final int MOVER_SPEED = 5;
+    public static final int MOVER_SPEED = 50;
 
     /**
      * Constructs paddle.
